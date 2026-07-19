@@ -1,9 +1,14 @@
-// App shell: root component. Providers (router, query client, theme) get wired here.
+import { RouterProvider } from 'react-router-dom'
+
+import { Providers } from './providers'
+import { router } from './routes'
+
+
 function App() {
   return (
-    <main>
-      <h1>Tracely</h1>
-    </main>
+    <Providers>
+      <RouterProvider router={router} />
+    </Providers>
   )
 }
 
