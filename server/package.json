@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main/server.ts",
+    "build": "tsc",
+    "start": "node dist/main/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.13.2",
+    "tsx": "^4.19.0",
+    "typescript": "~6.0.2"
+  }
+}

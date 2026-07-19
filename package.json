@@ -1,0 +1,18 @@
+{
+  "name": "tracely",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n client,server -c cyan,magenta \"yarn dev:client\" \"yarn dev:server\"",
+    "dev:client": "yarn workspace client dev",
+    "dev:server": "yarn workspace server dev",
+    "build": "yarn workspace client build && yarn workspace server build"
+  },
+  "packageManager": "yarn@4.17.1+sha512.ccbfabf7d7b6b32075088be9386fb9a2e00bb6887ef07fa56effabc890a56d53da1ccc4128d62db245fcbd3961b236d75335bdf7d5320ed6eafb7588b7ad4697",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
