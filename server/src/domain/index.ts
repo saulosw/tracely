@@ -8,4 +8,9 @@
  * something external, define an interface for it here and implement it in
  * infra/ — never import the concrete thing directly.
  */
-export {}
+export * from './entities/index.js'
+export * from './errors/index.js'
+export * from './providers/index.js'
+export * from './repositories/index.js'
+export * from './security/index.js'
+export * from './usecases/index.js'
