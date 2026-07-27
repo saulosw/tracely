@@ -60,6 +60,15 @@ export const typography: TypographyVariantsOptions = {
     fontSize: '12px',
     lineHeight: 1.4,
   },
+  eyebrow: {
+    fontFamily: fonts.mono,
+    fontWeight: 400,
+    fontSize: '11px',
+    lineHeight: 1.4,
+    letterSpacing: '0.13em',
+    textTransform: 'uppercase',
+    color: colors.inkFainter,
+  },
   fine: {
     fontFamily: fonts.sans,
     fontWeight: 400,

@@ -13,6 +13,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
         sectionTitle: 'h2',
         label: 'span',
         meta: 'span',
+        eyebrow: 'span',
         fine: 'p',
       },
     },
@@ -42,6 +43,10 @@ export const components: Components<Omit<Theme, 'components'>> = {
 
         '&.Mui-disabled': {
           opacity: 0.5,
+        },
+
+        '& .MuiButton-loadingIndicator': {
+          color: theme.tracely.colors.accent,
         },
       }),
     },

@@ -24,6 +24,7 @@ export const colors = {
   accent: '#d6a35a',
   accentBright: '#e6bd82',
   accentPale: '#c9b48c',
+  accentDim: '#a4813f',
 
   success: '#7db07d',
   danger: '#c98b5a',

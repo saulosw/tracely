@@ -1,28 +1,40 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
+import { FormAlert } from '@/shared/components/FormAlert'
 import { TextField } from '@/shared/components/TextField'
 import { useAuth } from '../../hooks/useAuth'
+import { useAuthSubmit } from '../../hooks/useAuthSubmit'
 import type { RegisterFormValues } from '../../schemas/registerSchema'
 import { registerSchema } from '../../schemas/registerSchema'
 import { Form, PasswordRow, SubmitButton } from './styles'
 
 
 export function RegisterForm() {
-  const { signUp, isSubmitting } = useAuth()
+  const { signUp } = useAuth()
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: 'onTouched',
     defaultValues: { firstName: '', email: '', password: '', confirmPassword: '' },
   })
+  const { formError, submit } = useAuthSubmit(setError)
 
 
   return (
-    <Form component="form" onSubmit={handleSubmit(signUp)} noValidate>
+    <Form
+      component="form"
+      onSubmit={handleSubmit(({ firstName, email, password }) =>
+        submit(() => signUp({ firstName, email, password })),
+      )}
+      noValidate
+    >
+      {formError ? <FormAlert>{formError}</FormAlert> : null}
+
       <TextField
         label="Primeiro nome"
         type="text"
@@ -61,7 +73,7 @@ export function RegisterForm() {
         />
       </PasswordRow>
 
-      <SubmitButton type="submit" variant="outline" fullWidth disabled={isSubmitting}>
+      <SubmitButton type="submit" variant="outline" fullWidth loading={isSubmitting}>
         Criar conta
       </SubmitButton>
     </Form>
