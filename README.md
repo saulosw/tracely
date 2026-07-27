@@ -14,8 +14,11 @@ GitHub is the first data source. The architecture is designed so more sources
 
 ## Status
 
-**Early scaffold.** Folder structure, tooling, and config only — no
-functionality yet.
+**Backend foundation in place.** GraphQL BFF (Yoga + Pothos), email/password
+auth with cookie sessions, GitHub OAuth connection with encrypted token
+storage, and incremental activity sync (commits, pull requests, issues,
+releases) into Postgres via Drizzle. See `server/README.md` for setup.
+The client is still UI-only (no API integration yet).
 
 ## Tech stack
 
