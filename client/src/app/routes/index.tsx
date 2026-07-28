@@ -4,12 +4,18 @@ import { LoginPage, RegisterPage } from '@/modules/auth'
 import { DashboardPage } from '@/modules/dashboard'
 import { PageContainer } from '@/shared/components/PageContainer'
 import { AppShell } from '../layouts/AppShell'
+import { GuestRoute } from './GuestRoute'
 import { ProtectedRoute } from './ProtectedRoute'
 
 
 export const router = createBrowserRouter([
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <RegisterPage /> },
+  {
+    element: <GuestRoute />,
+    children: [
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+    ],
+  },
   {
     element: <ProtectedRoute />,
     children: [

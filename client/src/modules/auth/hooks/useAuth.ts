@@ -1,30 +1,23 @@
-import { useCallback, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { createContext, useContext } from 'react'
+
+import type { AuthStatus, AuthUser, SignInInput, SignUpInput } from '../types'
 
 
-export function useAuth() {
-  const navigate = useNavigate()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export type AuthContextValue = {
+  user: AuthUser | null
+  status: AuthStatus
+  isAuthenticated: boolean
+  signIn: (input: SignInInput) => Promise<void>
+  signUp: (input: SignUpInput) => Promise<void>
+  signOut: () => Promise<void>
+}
 
-  const enterApp = useCallback(() => {
-    setIsSubmitting(true)
-    navigate('/dashboard')
-  }, [navigate])
+export const AuthContext = createContext<AuthContextValue | null>(null)
 
-  const signIn = useCallback(() => {
-    enterApp()
-  }, [enterApp])
-
-  const signUp = useCallback(() => {
-    enterApp()
-  }, [enterApp])
-
-  return {
-    // TODO: stub — sempre autenticado enquanto não existe backend, o que torna
-    // ProtectedRoute um no-op. Substituir por estado real antes de qualquer deploy.
-    isAuthenticated: true,
-    isSubmitting,
-    signIn,
-    signUp,
+export function useAuth(): AuthContextValue {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth precisa estar dentro de um AuthProvider')
   }
+  return context
 }

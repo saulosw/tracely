@@ -35,6 +35,7 @@ declare module '@mui/material/styles' {
     sectionTitle: CSSProperties
     label: CSSProperties
     meta: CSSProperties
+    eyebrow: CSSProperties
     fine: CSSProperties
   }
 
@@ -47,6 +48,7 @@ declare module '@mui/material/styles' {
     sectionTitle?: CSSProperties
     label?: CSSProperties
     meta?: CSSProperties
+    eyebrow?: CSSProperties
     fine?: CSSProperties
   }
 }
@@ -61,6 +63,7 @@ declare module '@mui/material/Typography' {
     sectionTitle: true
     label: true
     meta: true
+    eyebrow: true
     fine: true
   }
 }

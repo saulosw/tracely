@@ -6,19 +6,17 @@ import { styled } from '@mui/material/styles'
 import type { AsElement } from '@/shared/types/styled'
 
 
+const editorialMeasure = 720
+
 export const Split = styled(Box)(({ theme }) => ({
+  minHeight: '100vh',
   height: '100vh',
   overflow: 'hidden',
   display: 'grid',
-  gridTemplateColumns: '1.5fr 1fr',
-
-  [theme.breakpoints.down('lg')]: {
-    gridTemplateColumns: '1.15fr 1fr',
-  },
+  gridTemplateColumns: '1.1fr 1fr',
 
   [theme.breakpoints.down('md')]: {
     height: 'auto',
-    minHeight: '100vh',
     overflow: 'visible',
     gridTemplateColumns: '1fr',
   },
@@ -28,7 +26,7 @@ export const Editorial = styled(Stack)<AsElement>(({ theme }) => ({
   justifyContent: 'space-between',
   gap: theme.spacing(6),
   overflowY: 'auto',
-  padding: '56px clamp(56px, 4vw, 88px)',
+  padding: '56px clamp(48px, 4vw, 72px)',
   borderRight: `1px solid ${theme.tracely.border('hairline')}`,
 
   [theme.breakpoints.down('md')]: {
@@ -37,7 +35,7 @@ export const Editorial = styled(Stack)<AsElement>(({ theme }) => ({
 }))
 
 export const Hero = styled(Box)({
-  maxWidth: 780,
+  maxWidth: editorialMeasure,
 })
 
 export const HeroAccent = styled('em')(({ theme }) => ({
@@ -47,78 +45,68 @@ export const HeroAccent = styled('em')(({ theme }) => ({
 
 export const HeroSub = styled(Typography)(({ theme }) => ({
   color: theme.tracely.colors.inkSoft,
-  maxWidth: 640,
-  margin: '30px 0 0',
+  maxWidth: 560,
+  margin: '26px 0 0',
 }))
 
-export const Sources = styled(Box)({
-  marginTop: 34,
-})
+export const Specimen = styled(Box)<AsElement>(({ theme }) => ({
+  maxWidth: editorialMeasure,
+  border: `1px solid ${theme.tracely.border('faint')}`,
+  borderRadius: theme.tracely.radius.cardLarge,
+  background: theme.tracely.surfaceTint(0.015),
+  padding: '26px 30px 24px',
+  margin: 0,
+}))
 
-export const SourcesLabel = styled(Typography)(({ theme }) => ({
+export const SpecimenLabel = styled(Typography)(({ theme }) => ({
   display: 'block',
-  color: theme.tracely.colors.inkFaint,
-  marginBottom: 12,
+  color: theme.tracely.colors.accentDim,
 }))
 
-export const SourceChips = styled(Stack)({
+export const SpecimenQuote = styled(Typography)(({ theme }) => ({
+  fontSize: 'clamp(17px, 1.05vw, 19.5px)',
+  lineHeight: 1.6,
+  color: theme.tracely.colors.inkQuiet,
+  margin: '16px 0 0',
+
+  '& + &': {
+    color: theme.tracely.colors.inkDim,
+    marginTop: 14,
+  },
+}))
+
+export const SpecimenFooter = styled(Stack)<AsElement>(({ theme }) => ({
   flexDirection: 'row',
-  flexWrap: 'wrap',
-  gap: 8,
-})
-
-export const SourceChip = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'active',
-})<{ active?: boolean }>(({ theme, active }) => ({
-  ...theme.typography.label,
-  display: 'inline-flex',
   alignItems: 'center',
-  gap: 8,
-  padding: '6px 13px',
-  borderRadius: theme.tracely.radius.pill,
-  border: active
-    ? `1px solid ${theme.tracely.accentTint(0.45)}`
-    : `1px dashed ${theme.tracely.border('soft')}`,
-  color: active ? theme.tracely.colors.accentPale : theme.tracely.colors.inkFaint,
+  gap: 11,
+  marginTop: 22,
+  paddingTop: 18,
+  borderTop: `1px solid ${theme.tracely.border('hairline')}`,
 }))
 
-export const ChipDot = styled(Box)(({ theme }) => ({
-  width: 5,
-  height: 5,
+export const SpecimenDot = styled(Box)(({ theme }) => ({
+  width: 6,
+  height: 6,
+  flexShrink: 0,
   borderRadius: '50%',
   background: theme.tracely.colors.accent,
-  boxShadow: theme.tracely.glow.accentSoft,
 }))
 
-export const Quote = styled(Box)<AsElement>(({ theme }) => ({
-  borderLeft: `2px solid ${theme.tracely.accentTint(0.4)}`,
-  padding: '4px 0 4px 22px',
-  maxWidth: 660,
-  margin: 0,
-}))
-
-export const QuoteText = styled(Typography)(({ theme }) => ({
-  color: theme.tracely.colors.inkDim,
-  margin: 0,
-}))
-
-export const QuoteMeta = styled(Typography)<AsElement>(({ theme }) => ({
-  display: 'block',
+export const SpecimenMeta = styled(Typography)<AsElement>(({ theme }) => ({
   fontStyle: 'normal',
-  color: theme.tracely.colors.inkFaintest,
-  marginTop: 12,
+  color: theme.tracely.colors.inkFainter,
 }))
 
 export const Panel = styled(Stack)<AsElement>(({ theme }) => ({
   justifyContent: 'center',
+  alignItems: 'center',
   width: '100%',
-  maxWidth: 600,
-  margin: '0 auto',
   overflowY: 'auto',
   padding: '56px clamp(32px, 3vw, 64px)',
 
   [theme.breakpoints.down('md')]: {
     overflowY: 'visible',
+    minHeight: '100vh',
   },
 
   [theme.breakpoints.down('sm')]: {
@@ -126,12 +114,52 @@ export const Panel = styled(Stack)<AsElement>(({ theme }) => ({
   },
 }))
 
-export const PanelIntro = styled(Typography)(({ theme }) => ({
-  color: theme.tracely.colors.inkDim,
-  margin: '0 0 26px',
+export const PanelInner = styled(Box)({
+  width: '100%',
+  maxWidth: 440,
+})
+
+export const MobileBrand = styled(Box)(({ theme }) => ({
+  display: 'none',
+  marginBottom: 40,
+
+  [theme.breakpoints.down('md')]: {
+    display: 'block',
+  },
+}))
+
+export const PanelHeader = styled(Box)({
+  marginBottom: 34,
+})
+
+export const PanelEyebrow = styled(Typography)({
+  display: 'block',
+  marginBottom: 14,
+})
+
+export const PanelTitle = styled(Typography)(({ theme }) => ({
+  fontFamily: theme.tracely.fonts.serif,
+  fontWeight: 300,
+  fontSize: 'clamp(32px, 2.1vw, 38px)',
+  lineHeight: 1.1,
+  letterSpacing: '-0.015em',
+  color: theme.tracely.colors.inkStrong,
+  margin: 0,
+}))
+
+export const PanelSubtitle = styled(Typography)(({ theme }) => ({
+  fontSize: 'clamp(17px, 1.1vw, 19px)',
+  color: theme.tracely.colors.inkMuted,
+  margin: '12px 0 0',
+}))
+
+export const PanelFooter = styled(Box)(({ theme }) => ({
+  marginTop: 26,
+  paddingTop: 22,
+  borderTop: `1px solid ${theme.tracely.border('hairline')}`,
 }))
 
 export const Terms = styled(Typography)(({ theme }) => ({
   color: theme.tracely.colors.inkFaintest,
-  margin: '28px 0 0',
+  margin: '22px 0 0',
 }))
