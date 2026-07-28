@@ -1,2 +1,2 @@
-// Environment/config loading and validation.
-export {}
+export { loadConfig } from './env.js'
+export type { Config } from './env.js'

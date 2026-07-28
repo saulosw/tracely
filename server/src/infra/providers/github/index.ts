@@ -1,0 +1,5 @@
+export { createGithubOAuthClient } from './githubOAuthClient.js'
+export type { GithubOAuthConfig } from './githubOAuthClient.js'
+export { createGithubActivityProvider } from './githubActivityProvider.js'
+export { translateGithubError } from './githubErrors.js'
+export * from './mappers/index.js'

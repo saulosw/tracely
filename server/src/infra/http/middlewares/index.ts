@@ -1,2 +1,1 @@
-// Express middlewares (auth, error handling, logging).
-export {}
+export { createSessionMiddleware } from './sessionMiddleware.js'

@@ -1,14 +1,21 @@
-// Composition root: env config, dependency wiring, and server bootstrap live here.
-import express from 'express'
+import { buildApp } from './app.js'
+import { loadConfig } from './config/index.js'
+import { composeServer } from './factories/index.js'
 
-const app = express()
-app.use(express.json())
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' })
-})
+const config = loadConfig()
+const deps = composeServer(config)
+const app = buildApp(deps)
 
-const port = Number(process.env.PORT ?? 3333)
-app.listen(port, () => {
-  console.log(`[server] listening on http://localhost:${port}`)
+try {
+  const swept = await deps.sweepStaleSyncRuns()
+  if (swept > 0) {
+    deps.logger.warn({ swept }, 'marked stale sync runs as failed')
+  }
+} catch (error) {
+  deps.logger.warn({ err: error }, 'could not sweep stale sync runs (database unreachable?)')
+}
+
+app.listen(config.port, () => {
+  deps.logger.info(`listening on http://localhost:${config.port}`)
 })

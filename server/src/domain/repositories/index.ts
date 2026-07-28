@@ -1,2 +1,7 @@
-// Repository INTERFACES only (ports). Concrete implementations live in infra/repositories.
-export {}
+export type { UserRepository } from './userRepository.js'
+export type { SessionRepository } from './sessionRepository.js'
+export type { OAuthStateRepository } from './oauthStateRepository.js'
+export type { ConnectionRepository } from './connectionRepository.js'
+export type { ProjectRepository } from './projectRepository.js'
+export type { ActivityListFilters, ActivityRepository } from './activityRepository.js'
+export type { SyncRunOutcome, SyncRunRepository } from './syncRunRepository.js'
