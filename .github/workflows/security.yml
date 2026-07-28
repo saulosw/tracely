@@ -1,0 +1,135 @@
+name: Security
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+# Least privilege. Findings are surfaced in the job logs instead of uploaded as
+# SARIF, so no job needs `security-events: write`.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: Secret scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      # Full history so the base..head range below is resolvable.
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # The official gitleaks-action is under a commercial EULA, so the MIT
+      # gitleaks CLI is run straight from its image, pinned by digest.
+      # SHAs are passed through env instead of being interpolated into the shell.
+      - name: Scan the pull request commit range
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          docker run --rm \
+            --volume "${GITHUB_WORKSPACE}:/repo" \
+            --env GIT_CONFIG_COUNT=1 \
+            --env GIT_CONFIG_KEY_0=safe.directory \
+            --env GIT_CONFIG_VALUE_0=/repo \
+            ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f \
+            git /repo \
+              --redact \
+              --no-banner \
+              --exit-code 1 \
+              --log-opts="${BASE_SHA}..${HEAD_SHA}"
+
+  sca:
+    name: Dependency vulnerabilities (Trivy)
+    runs-on: ubuntu-latest
+    steps:
+      # No Node setup: Trivy reads yarn.lock directly to build the dependency tree.
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Scan dependencies
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          # Only vulnerabilities: Gitleaks covers secrets and Semgrep covers
+          # misconfiguration, so this avoids duplicate findings on one PR.
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          # Noise control: report only what can actually be acted on today.
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+          hide-progress: true
+          # Caches the vulnerability database between runs.
+          cache: true
+
+  sast:
+    name: Static analysis (Semgrep)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep@sha256:bdf7013b2c3634a487671158da77c554f531742326b543a9464d2adf6c433ac8 # 1.171.0
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # p/default is Semgrep's curated low-false-positive security ruleset;
+      # p/react adds the client-side rules. No SEMGREP_APP_TOKEN, so nothing
+      # depends on a Semgrep account.
+      - name: Run Semgrep security rulesets
+        run: |
+          semgrep scan \
+            --config=p/default \
+            --config=p/react \
+            --error \
+            --metrics=off
+
+  dependencies:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Complements Trivy on a different axis: Trivy audits the whole tree,
+      # this blocks the pull request from *introducing* a vulnerable dependency.
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+
+  workflow-audit:
+    name: Workflow audit (actionlint + zizmor)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Correctness: YAML schema, ${{ }} expressions and shellcheck over `run:`.
+      - name: Validate workflow syntax
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
+        with:
+          version: 1.7.12
+
+      # Security: template injection, credential persistence, unpinned actions,
+      # over-broad permissions. Offline so it needs no API token.
+      - name: Audit workflow security
+        uses: zizmorcore/zizmor-action@6fc4b006235f201fdab3722e17240ab420d580e5 # v0.6.1
+        with:
+          version: v1.28.0
+          online-audits: false
+          advanced-security: false

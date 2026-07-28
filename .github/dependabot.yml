@@ -1,0 +1,39 @@
+version: 2
+
+updates:
+  # Keeps the SHA-pinned actions in .github/workflows and .github/actions current.
+  # Without this, pinning by digest quietly turns into stale dependencies.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+    # Wait before adopting a brand new release, so a compromised or yanked
+    # version is not pulled in the moment it is published.
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']
+        update-types: [minor, patch]
+
+  # Single entry: there is one yarn.lock at the root and Dependabot resolves the
+  # client/ and server/ manifests through the Yarn workspaces definition.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: chore
+    cooldown:
+      default-days: 7
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        update-types: [minor, patch]
+      prod-dependencies:
+        dependency-type: production
+        update-types: [minor, patch]

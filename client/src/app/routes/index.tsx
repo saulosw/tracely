@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router'
 
 import { LoginPage, RegisterPage } from '@/modules/auth'
 import { DashboardPage } from '@/modules/dashboard'
