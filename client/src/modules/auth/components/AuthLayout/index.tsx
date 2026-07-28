@@ -2,6 +2,7 @@ import Typography from '@mui/material/Typography'
 import type { ReactNode } from 'react'
 
 import { Logo } from '@/shared/components/Logo'
+import { SourceRail } from '../SourceRail'
 import {
   Editorial,
   Hero,
@@ -51,6 +52,8 @@ export function AuthLayout({ eyebrow, title, subtitle, footer, children }: AuthL
             silencioso de todo dia em algo que você consegue reler depois.
           </HeroSub>
         </Hero>
+
+        <SourceRail />
 
         <Specimen component="figure">
           <SpecimenLabel variant="eyebrow">De um capítulo · março de 2026</SpecimenLabel>

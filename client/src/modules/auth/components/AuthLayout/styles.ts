@@ -6,6 +6,8 @@ import { styled } from '@mui/material/styles'
 import type { AsElement } from '@/shared/types/styled'
 
 
+const editorialMeasure = 720
+
 export const Split = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
   height: '100vh',
@@ -33,7 +35,7 @@ export const Editorial = styled(Stack)<AsElement>(({ theme }) => ({
 }))
 
 export const Hero = styled(Box)({
-  maxWidth: 560,
+  maxWidth: editorialMeasure,
 })
 
 export const HeroAccent = styled('em')(({ theme }) => ({
@@ -43,12 +45,12 @@ export const HeroAccent = styled('em')(({ theme }) => ({
 
 export const HeroSub = styled(Typography)(({ theme }) => ({
   color: theme.tracely.colors.inkSoft,
-  maxWidth: 470,
+  maxWidth: 560,
   margin: '26px 0 0',
 }))
 
 export const Specimen = styled(Box)<AsElement>(({ theme }) => ({
-  maxWidth: 560,
+  maxWidth: editorialMeasure,
   border: `1px solid ${theme.tracely.border('faint')}`,
   borderRadius: theme.tracely.radius.cardLarge,
   background: theme.tracely.surfaceTint(0.015),
@@ -114,7 +116,7 @@ export const Panel = styled(Stack)<AsElement>(({ theme }) => ({
 
 export const PanelInner = styled(Box)({
   width: '100%',
-  maxWidth: 396,
+  maxWidth: 440,
 })
 
 export const MobileBrand = styled(Box)(({ theme }) => ({
