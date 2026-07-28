@@ -6,6 +6,7 @@ import type { TokenCipher } from '../../domain/index.js'
 
 
 const IV_LENGTH = 12
+const AUTH_TAG_LENGTH = 16
 const VERSION = 'v1'
 
 export const createAesGcmTokenCipher = (key: Buffer): TokenCipher => {
@@ -16,7 +17,7 @@ export const createAesGcmTokenCipher = (key: Buffer): TokenCipher => {
   return {
     encrypt(plain) {
       const iv = randomBytes(IV_LENGTH)
-      const cipher = createCipheriv('aes-256-gcm', key, iv)
+      const cipher = createCipheriv('aes-256-gcm', key, iv, { authTagLength: AUTH_TAG_LENGTH })
       const encrypted = Buffer.concat([cipher.update(plain, 'utf8'), cipher.final()])
       const tag = cipher.getAuthTag()
       return `${VERSION}:${iv.toString('base64')}:${tag.toString('base64')}:${encrypted.toString('base64')}`
@@ -28,7 +29,9 @@ export const createAesGcmTokenCipher = (key: Buffer): TokenCipher => {
         throw new InfraError('Unsupported encrypted token format')
       }
       try {
-        const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(ivB64, 'base64'))
+        const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(ivB64, 'base64'), {
+          authTagLength: AUTH_TAG_LENGTH,
+        })
         decipher.setAuthTag(Buffer.from(tagB64, 'base64'))
         return Buffer.concat([
           decipher.update(Buffer.from(dataB64, 'base64')),
