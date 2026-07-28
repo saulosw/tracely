@@ -29,7 +29,8 @@ The client is still UI-only (no API integration yet).
 
 ## Running locally
 
-Requires Node ≥ 22. Yarn is provisioned automatically through Corepack:
+Requires the Node version in `.nvmrc` (22). Yarn is provisioned automatically
+through Corepack:
 
 ```bash
 corepack enable   # once per machine, if you haven't already
@@ -44,6 +45,24 @@ yarn dev:client   # client only
 yarn dev:server   # server only
 yarn build        # build both workspaces
 ```
+
+Per workspace (`client` or `server`), the same checks CI runs:
+
+```bash
+yarn workspace <workspace> lint        # oxlint
+yarn workspace <workspace> typecheck   # tsc
+yarn workspace <workspace> test        # vitest
+```
+
+## Continuous integration
+
+Every pull request to `main` or `develop` runs two workflows in parallel:
+
+- **CI** (`.github/workflows/ci.yml`) — lint, type check and tests for each
+  workspace, plus a full build.
+- **Security** (`.github/workflows/security.yml`) — Gitleaks (secrets), Trivy
+  (dependency vulnerabilities), Semgrep (SAST), dependency review, and an
+  actionlint/zizmor audit of the workflows themselves.
 
 ## Repository structure
 

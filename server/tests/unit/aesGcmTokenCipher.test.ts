@@ -30,6 +30,14 @@ describe('aesGcmTokenCipher', () => {
     expect(() => cipher.decrypt(tampered)).toThrow(InfraError)
   })
 
+  it('rejects payloads carrying a truncated authentication tag', () => {
+    const encrypted = cipher.encrypt('gho_secret_token')
+    const parts = encrypted.split(':')
+    const shortTag = Buffer.from(parts[2]!, 'base64').subarray(0, 4)
+    const truncated = `${parts[0]}:${parts[1]}:${shortTag.toString('base64')}:${parts[3]}`
+    expect(() => cipher.decrypt(truncated)).toThrow(InfraError)
+  })
+
   it('rejects payloads encrypted with another key', () => {
     const other = createAesGcmTokenCipher(randomBytes(32))
     const encrypted = other.encrypt('gho_secret_token')

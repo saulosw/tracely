@@ -1,0 +1,41 @@
+name: Setup Node and Yarn
+description: >-
+  Installs the Node version pinned in .nvmrc, provisions Yarn 4 through Corepack,
+  restores the Yarn global cache and installs dependencies from the lockfile.
+
+runs:
+  using: composite
+  steps:
+    - name: Install Node from .nvmrc
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version-file: .nvmrc
+
+    # `packageManager` in package.json pins Yarn 4.17.1, and .yarn/releases is not
+    # committed, so Corepack is what actually provisions the Yarn binary.
+    - name: Provision Yarn via Corepack
+      shell: bash
+      run: corepack enable
+
+    # Resolved *after* Corepack so it is Yarn 4 answering, not the runner's
+    # bundled Yarn 1. This is why setup-node's built-in `cache: yarn` is not used:
+    # it probes the cache folder before Corepack has taken over.
+    - name: Resolve Yarn cache folder
+      id: yarn-cache
+      shell: bash
+      run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
+
+    - name: Restore Yarn cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+        # Partial hit: when the lockfile changes, reuse the previous cache and
+        # download only the delta instead of every tarball again.
+        restore-keys: yarn-${{ runner.os }}-
+
+    # --immutable is the Yarn 4 equivalent of `npm ci`: it fails if the install
+    # would modify yarn.lock, so it doubles as lockfile validation.
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --immutable

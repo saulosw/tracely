@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+# Least privilege: every job here only reads the repository.
+permissions:
+  contents: read
+
+# A new push to the same pull request cancels the runs it superseded.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+    strategy:
+      # Report both workspaces even when one of them fails.
+      fail-fast: false
+      matrix:
+        workspace: [client, server]
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node and Yarn
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: yarn workspace ${{ matrix.workspace }} lint
+
+      - name: Type check
+        run: yarn workspace ${{ matrix.workspace }} typecheck
+
+      - name: Unit tests
+        run: yarn workspace ${{ matrix.workspace }} test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node and Yarn
+        uses: ./.github/actions/setup
+
+      # client: tsc -b && vite build — server: tsc -p tsconfig.build.json
+      - name: Build both workspaces
+        run: yarn build

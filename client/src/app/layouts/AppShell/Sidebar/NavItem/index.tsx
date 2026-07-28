@@ -1,5 +1,5 @@
 import ListItem from '@mui/material/ListItem'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 
 import { Dot, NavItemRoot, NavLabel } from './styles'
 

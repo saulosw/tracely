@@ -1,0 +1,10 @@
+# Trivy suppression list — read by the "Dependency vulnerabilities" CI job.
+#
+# One vulnerability identifier per line, always with a comment saying why it is
+# accepted. Add an expiry so the entry gets revisited instead of living forever:
+#
+#   # graphql-yoga transitive dep, no upstream fix yet, tracked in #123
+#   CVE-2026-12345 exp:2026-12-31
+#
+# The job already runs with --ignore-unfixed, so anything it reports has a fix
+# available upstream. Prefer bumping the dependency over adding an entry here.
