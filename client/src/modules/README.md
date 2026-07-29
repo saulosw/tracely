@@ -3,7 +3,9 @@
 One folder per product feature, each self-contained:
 
 - `auth/` — login screen, auth state and hooks
-- `github-connection/` — "connect GitHub" flow, connection status
+- `connections/` — the sources the story is read from, and their connection state
+- `dashboard/` — the authenticated landing view
+- `history/` — the chapters already generated
 - `reports/` — time-range picker, report generation trigger
 - `timeline/` — the narrative timeline / story view
 

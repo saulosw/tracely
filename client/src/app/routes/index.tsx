@@ -1,8 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 
 import { LoginPage, RegisterPage } from '@/modules/auth'
+import { ConnectionsPage } from '@/modules/connections'
 import { DashboardPage } from '@/modules/dashboard'
-import { PageContainer } from '@/shared/components/PageContainer'
+import { HistoryPage } from '@/modules/history'
+import { GeneratePage } from '@/modules/reports'
 import { AppShell } from '../layouts/AppShell'
 import { GuestRoute } from './GuestRoute'
 import { ProtectedRoute } from './ProtectedRoute'
@@ -23,9 +25,9 @@ export const router = createBrowserRouter([
         element: <AppShell />,
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
-          { path: '/connect', element: <PageContainer /> },
-          { path: '/generate', element: <PageContainer /> },
-          { path: '/history', element: <PageContainer /> },
+          { path: '/connect', element: <ConnectionsPage /> },
+          { path: '/generate', element: <GeneratePage /> },
+          { path: '/history', element: <HistoryPage /> },
         ],
       },
     ],
