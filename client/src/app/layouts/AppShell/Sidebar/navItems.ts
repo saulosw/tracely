@@ -1,11 +1,14 @@
+import type { IconName } from '@/shared/components/Icon'
+
+
 export type NavItemDefinition = {
   to: string
   label: string
+  icon: IconName
 }
 
 export const navItems: NavItemDefinition[] = [
-  { to: '/dashboard', label: 'Painel' },
-  { to: '/connect', label: 'Conectar' },
-  { to: '/generate', label: 'Gerar' },
-  { to: '/history', label: 'Histórico' },
+  { to: '/dashboard', label: 'Início', icon: 'home' },
+  { to: '/connect', label: 'Conexões', icon: 'connections' },
+  { to: '/history', label: 'Histórico', icon: 'history' },
 ]

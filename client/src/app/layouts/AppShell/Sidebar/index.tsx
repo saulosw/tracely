@@ -1,18 +1,17 @@
+import { Link } from 'react-router'
+
+import { useAuth } from '@/modules/auth'
 import { Logo } from '@/shared/components/Logo'
 import { NavItem } from './NavItem'
 import { navItems } from './navItems'
-import {
-  Account,
-  Avatar,
-  Brand,
-  Footer,
-  Nav,
-  NewChapterButton,
-  SidebarRoot,
-} from './styles'
+import { UserMenu } from './UserMenu'
+import { Brand, Footer, Nav, NewChapterButton, SidebarRoot } from './styles'
 
 
 export function Sidebar() {
+  const { user } = useAuth()
+
+
   return (
     <SidebarRoot component="aside">
       <Brand>
@@ -21,19 +20,15 @@ export function Sidebar() {
 
       <Nav component="nav">
         {navItems.map((item) => (
-          <NavItem key={item.to} to={item.to} label={item.label} />
+          <NavItem key={item.to} to={item.to} label={item.label} icon={item.icon} />
         ))}
       </Nav>
 
-      <NewChapterButton variant="solid" fullWidth>
+      <NewChapterButton component={Link} to="/generate" variant="solid" fullWidth>
         + Novo capítulo
       </NewChapterButton>
 
-      <Footer>
-        <Account>
-          <Avatar aria-hidden />
-        </Account>
-      </Footer>
+      <Footer>{user ? <UserMenu user={user} /> : null}</Footer>
     </SidebarRoot>
   )
 }

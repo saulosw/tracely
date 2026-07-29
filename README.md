@@ -73,7 +73,9 @@ tracely/
       app/                # app shell, providers, router setup
       modules/            # one folder per product feature
         auth/             #   login, auth state
-        github-connection/#   "connect GitHub" flow
+        connections/      #   the sources the story is read from
+        dashboard/        #   the authenticated landing view
+        history/          #   the chapters already generated
         reports/          #   time-range picker, report trigger
         timeline/         #   the narrative timeline view
       shared/             # reusable UI primitives, hooks, lib, design tokens
