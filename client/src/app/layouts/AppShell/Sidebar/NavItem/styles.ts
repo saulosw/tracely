@@ -26,17 +26,17 @@ export const NavItemRoot = styled(ListItemButton)<AsLink>(({ theme }) => ({
   },
 }))
 
-export const Dot = styled(Box)(({ theme }) => ({
-  width: 6,
-  height: 6,
-  borderRadius: '50%',
-  flexShrink: 0,
-  background: theme.tracely.surfaceTint(0.18),
+export const NavGlyph = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  color: theme.tracely.colors.inkFaintest,
   transition: theme.tracely.transition.fast,
 
   '.active > &': {
-    background: theme.tracely.colors.accent,
-    boxShadow: theme.tracely.glow.accentSoft,
+    color: theme.tracely.colors.accent,
+  },
+
+  '.MuiListItemButton-root:hover > &': {
+    color: theme.tracely.colors.inkDim,
   },
 }))
 

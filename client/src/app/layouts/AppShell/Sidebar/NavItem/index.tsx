@@ -1,19 +1,25 @@
 import ListItem from '@mui/material/ListItem'
 import { NavLink } from 'react-router'
 
-import { Dot, NavItemRoot, NavLabel } from './styles'
+import { Icon } from '@/shared/components/Icon'
+import { NavGlyph, NavItemRoot, NavLabel } from './styles'
+
+import type { IconName } from '@/shared/components/Icon'
 
 
 type NavItemProps = {
   to: string
   label: string
+  icon: IconName
 }
 
-export function NavItem({ to, label }: NavItemProps) {
+export function NavItem({ to, label, icon }: NavItemProps) {
   return (
     <ListItem disablePadding>
       <NavItemRoot component={NavLink} to={to} disableRipple>
-        <Dot aria-hidden />
+        <NavGlyph>
+          <Icon name={icon} />
+        </NavGlyph>
         <NavLabel primary={label} />
       </NavItemRoot>
     </ListItem>

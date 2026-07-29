@@ -4,11 +4,11 @@ import List from '@mui/material/List'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 
-import type { AsElement } from '@/shared/types/styled'
+import type { AsElement, AsLink } from '@/shared/types/styled'
 
 
 export const SidebarRoot = styled(Stack)<AsElement>(({ theme }) => ({
-  width: 252,
+  width: 272,
   flexShrink: 0,
   height: '100vh',
   position: 'sticky',
@@ -28,26 +28,10 @@ export const Nav = styled(List)<AsElement>({
   padding: 0,
 })
 
-export const NewChapterButton = styled(Button)({
+export const NewChapterButton = styled(Button)<AsLink>({
   marginTop: 22,
 })
 
 export const Footer = styled(Box)({
   marginTop: 'auto',
 })
-
-export const Account = styled(Stack)(({ theme }) => ({
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 11,
-  padding: '10px 8px',
-  borderTop: `1px solid ${theme.tracely.border('hairline')}`,
-}))
-
-export const Avatar = styled(Box)(({ theme }) => ({
-  width: 32,
-  height: 32,
-  borderRadius: '50%',
-  flexShrink: 0,
-  background: theme.tracely.colors.surfaceRaised,
-}))
