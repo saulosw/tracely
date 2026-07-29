@@ -94,6 +94,10 @@ export const components: Components<Omit<Theme, 'components'>> = {
         '&.Mui-focused, &.Mui-error': {
           color: theme.tracely.colors.inkDim,
         },
+
+        '&.Mui-disabled': {
+          color: theme.tracely.colors.inkFaintest,
+        },
       }),
     },
   },
@@ -119,6 +123,12 @@ export const components: Components<Omit<Theme, 'components'>> = {
         '&.Mui-error': {
           borderColor: theme.tracely.colors.danger,
         },
+
+        '&.Mui-disabled': {
+          background: 'transparent',
+          borderColor: theme.tracely.border('hairline'),
+          color: theme.tracely.colors.inkFaintest,
+        },
       }),
       input: ({ theme }) => ({
         padding: 0,
@@ -127,6 +137,14 @@ export const components: Components<Omit<Theme, 'components'>> = {
         '&::placeholder': {
           color: theme.tracely.colors.inkFaintest,
           opacity: 1,
+        },
+
+        '&.Mui-disabled': {
+          WebkitTextFillColor: theme.tracely.colors.inkFaintest,
+
+          '&::placeholder': {
+            opacity: 0.55,
+          },
         },
       }),
     },
@@ -141,6 +159,10 @@ export const components: Components<Omit<Theme, 'components'>> = {
 
         '&.Mui-error': {
           color: theme.tracely.colors.danger,
+        },
+
+        '&.Mui-disabled': {
+          color: theme.tracely.colors.inkFaintest,
         },
       }),
     },

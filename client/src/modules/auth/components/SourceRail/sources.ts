@@ -12,7 +12,7 @@ export const sources: Source[] = [
   { id: 'linear', label: 'Linear' },
   { id: 'jira', label: 'Jira' },
   { id: 'notion', label: 'Notion' },
-  { id: 'google-calendar', label: 'Google Agenda' },
+  { id: 'google-workspace', label: 'Google Workspace' },
   { id: 'obsidian', label: 'Obsidian' },
   { id: 'slack', label: 'Slack' },
 ]

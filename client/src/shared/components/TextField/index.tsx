@@ -32,7 +32,7 @@ export function TextField({
 
 
   return (
-    <FormControl error={Boolean(error)}>
+    <FormControl error={Boolean(error)} disabled={rest.disabled}>
       <LabelRow>
         <FieldLabel htmlFor={inputId}>{label}</FieldLabel>
         {trailing}
