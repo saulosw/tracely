@@ -4,6 +4,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import type { ReactNode } from 'react'
 
 import { AuthProvider } from '@/modules/auth'
+import { ConnectionsProvider } from '@/modules/connections'
 import { theme } from '../theme'
 import { globalStyles } from '../theme/globalStyles'
 
@@ -17,7 +18,9 @@ export function Providers({ children }: ProvidersProps) {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <GlobalStyles styles={globalStyles} />
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <ConnectionsProvider>{children}</ConnectionsProvider>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

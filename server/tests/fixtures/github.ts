@@ -11,8 +11,8 @@ import type {
 export const repositoryFixture = {
   id: 1001,
   name: 'tracely',
-  full_name: 'saulo/tracely',
-  owner: { login: 'saulo', id: 42, type: 'User' },
+  full_name: 'octocat/tracely',
+  owner: { login: 'octocat', id: 42, type: 'User' },
   description: 'Narrative timeline',
   private: true,
   fork: false,
@@ -25,31 +25,31 @@ export const repositoryFixture = {
 
 export const commitFixture = {
   sha: 'abc123',
-  html_url: 'https://github.com/saulo/tracely/commit/abc123',
-  author: { login: 'saulo', id: 42, type: 'User' },
+  html_url: 'https://github.com/octocat/tracely/commit/abc123',
+  author: { login: 'octocat', id: 42, type: 'User' },
   committer: { login: 'web-flow', id: 19864447, type: 'User' },
   commit: {
     message: 'feat: add narrative timeline\n\nLonger body explaining the change.',
-    author: { name: 'Saulo', email: 'saulo@example.com', date: '2026-07-10T12:00:00Z' },
+    author: { name: 'Alex', email: 'alex@example.com', date: '2026-07-10T12:00:00Z' },
     committer: { name: 'GitHub', email: 'noreply@github.com', date: '2026-07-10T12:00:00Z' },
   },
 } as unknown as GithubCommit
 
 export const unlinkedCommitFixture = {
   sha: 'def456',
-  html_url: 'https://github.com/saulo/tracely/commit/def456',
+  html_url: 'https://github.com/octocat/tracely/commit/def456',
   author: null,
   committer: null,
   commit: {
     message: 'chore: local commit without a linked github account',
-    author: { name: 'Saulo', email: 'saulo@example.com', date: '2026-07-11T09:00:00Z' },
-    committer: { name: 'Saulo', email: 'saulo@example.com', date: '2026-07-11T09:00:00Z' },
+    author: { name: 'Alex', email: 'alex@example.com', date: '2026-07-11T09:00:00Z' },
+    committer: { name: 'Alex', email: 'alex@example.com', date: '2026-07-11T09:00:00Z' },
   },
 } as unknown as GithubCommit
 
 export const botCommitFixture = {
   sha: 'bot789',
-  html_url: 'https://github.com/saulo/tracely/commit/bot789',
+  html_url: 'https://github.com/octocat/tracely/commit/bot789',
   author: { login: 'dependabot[bot]', id: 49699333, type: 'Bot' },
   committer: { login: 'dependabot[bot]', id: 49699333, type: 'Bot' },
   commit: {
@@ -73,10 +73,10 @@ export const pullRequestFixture = {
   number: 12,
   title: 'Add GitHub OAuth connection flow',
   body: 'Implements the OAuth web flow with encrypted token storage.',
-  html_url: 'https://github.com/saulo/tracely/pull/12',
+  html_url: 'https://github.com/octocat/tracely/pull/12',
   state: 'closed',
   draft: false,
-  user: { login: 'saulo', id: 42, type: 'User' },
+  user: { login: 'octocat', id: 42, type: 'User' },
   created_at: '2026-07-05T10:00:00Z',
   updated_at: '2026-07-08T15:00:00Z',
   closed_at: '2026-07-08T15:00:00Z',
@@ -91,9 +91,9 @@ export const issueFixture = {
   number: 30,
   title: 'Sync fails on empty repositories',
   body: 'Repositories without commits return 409.',
-  html_url: 'https://github.com/saulo/tracely/issues/30',
+  html_url: 'https://github.com/octocat/tracely/issues/30',
   state: 'closed',
-  user: { login: 'saulo', id: 42, type: 'User' },
+  user: { login: 'octocat', id: 42, type: 'User' },
   created_at: '2026-07-02T08:00:00Z',
   updated_at: '2026-07-03T09:00:00Z',
   closed_at: '2026-07-03T09:00:00Z',
@@ -106,9 +106,9 @@ export const releaseFixture = {
   tag_name: 'v0.1.0',
   name: 'First public preview',
   body: 'Initial release with the GitHub source.',
-  html_url: 'https://github.com/saulo/tracely/releases/tag/v0.1.0',
+  html_url: 'https://github.com/octocat/tracely/releases/tag/v0.1.0',
   prerelease: true,
-  author: { login: 'saulo', id: 42, type: 'User' },
+  author: { login: 'octocat', id: 42, type: 'User' },
   created_at: '2026-07-15T00:00:00Z',
   published_at: '2026-07-15T10:00:00Z',
 } as unknown as GithubRelease

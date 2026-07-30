@@ -77,7 +77,7 @@ describe('completeProviderConnection', () => {
     })
 
     expect(connection.encryptedAccessToken).toBe('enc:gh-token')
-    expect(connection.accountLogin).toBe('saulo')
+    expect(connection.accountLogin).toBe('octocat')
     expect(connection.scopes).toEqual(['repo'])
     expect(connections.connections).toHaveLength(1)
 

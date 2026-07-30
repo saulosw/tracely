@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 const fillCredentials = async (user: ReturnType<typeof userEvent.setup>) => {
-  await user.type(screen.getByLabelText('E-mail'), 'saulo@exemplo.com')
+  await user.type(screen.getByLabelText('E-mail'), 'alex@exemplo.com')
   await user.type(screen.getByLabelText('Senha'), 'S3nha!forte')
 }
 
@@ -53,7 +53,7 @@ describe('LoginForm', () => {
       String(init?.body).includes('mutation Login'),
     )
     expect(JSON.parse(String(loginCall?.[1]?.body)).variables).toEqual({
-      input: { email: 'saulo@exemplo.com', password: 'S3nha!forte' },
+      input: { email: 'alex@exemplo.com', password: 'S3nha!forte' },
     })
   })
 

@@ -22,8 +22,8 @@ const setup = () => {
 }
 
 const validInput = {
-  firstName: 'Saulo',
-  email: 'Saulo@Example.com',
+  firstName: 'Alex',
+  email: 'Alex@Example.com',
   password: 'S3nha!forte',
 }
 
@@ -33,7 +33,7 @@ describe('registerUser', () => {
 
     const result = await registerUser(validInput)
 
-    expect(result.user.email).toBe('saulo@example.com')
+    expect(result.user.email).toBe('alex@example.com')
     expect(result.user.passwordHash).toBe('hashed:S3nha!forte')
     expect(result.sessionToken).toBe('token-1')
     expect(result.sessionExpiresAt.getTime()).toBeGreaterThan(Date.now())
@@ -60,7 +60,7 @@ describe('registerUser', () => {
   it('rejects an invalid first name', async () => {
     const { registerUser } = setup()
     await expect(
-      registerUser({ ...validInput, firstName: 'Saulo Pereira' }),
+      registerUser({ ...validInput, firstName: 'Alex Doe' }),
     ).rejects.toBeInstanceOf(ValidationError)
   })
 })

@@ -1,12 +1,12 @@
-import type { ConnectionSource, UpcomingSource } from './types'
+import type { SourceCatalogEntry, UpcomingSource } from './types'
 
 
-export const connectionSources: ConnectionSource[] = [
+export const sourceCatalog: SourceCatalogEntry[] = [
   {
     id: 'github',
     name: 'GitHub',
     description: 'Lê commits, pull requests e a atividade dos seus repositórios.',
-    state: 'disconnected',
+    provider: 'GITHUB',
     detail:
       'Commits, pull requests e metadados dos repositórios — somente leitura, sempre. Nunca enviamos, editamos ou apagamos nada nos seus repos, e lemos apenas os repositórios aos quais você der acesso.',
   },
@@ -14,13 +14,11 @@ export const connectionSources: ConnectionSource[] = [
     id: 'jira',
     name: 'Jira',
     description: 'Traz issues, sprints e os tickets que você fechou.',
-    state: 'unavailable',
   },
   {
     id: 'obsidian',
     name: 'Obsidian',
     description: 'Traz suas notas diárias e entradas de diário para a história.',
-    state: 'unavailable',
   },
 ]
 

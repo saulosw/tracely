@@ -2,7 +2,8 @@ import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router'
 
 import { useConnectionSources } from '@/modules/connections'
-import { SourceChip, SourceError, SourceNote, SourceRow } from './styles'
+import { SourceGlyph } from '@/shared/components/SourceGlyph'
+import { SourceCard, SourceError, SourceNote, SourceRow } from './styles'
 
 
 type SourcePickerProps = {
@@ -24,11 +25,11 @@ export function SourcePicker({ value, onChange, onBlur, error }: SourcePickerPro
     <>
       <SourceRow>
         {sources.map((source) => {
-          const locked = source.state === 'unavailable'
+          const locked = source.state !== 'connected'
           const selected = !locked && value.includes(source.id)
 
           return (
-            <SourceChip
+            <SourceCard
               key={source.id}
               selected={selected}
               disabled={locked}
@@ -36,8 +37,9 @@ export function SourcePicker({ value, onChange, onBlur, error }: SourcePickerPro
               onClick={() => toggle(source.id)}
               onBlur={onBlur}
             >
+              <SourceGlyph source={source.id} />
               {source.name}
-            </SourceChip>
+            </SourceCard>
           )
         })}
       </SourceRow>

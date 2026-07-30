@@ -10,19 +10,32 @@ export const SourceRow = styled(Stack)({
   gap: 10,
 })
 
-export const SourceChip = styled(Button, {
+export const SourceCard = styled(Button, {
   shouldForwardProp: (prop) => prop !== 'selected',
 })<{ selected: boolean }>(({ theme, selected }) => ({
-  padding: '9px 20px',
+  flexDirection: 'column',
+  gap: 9,
+  minWidth: 116,
+  padding: '16px 20px',
   fontSize: 14,
-  borderRadius: theme.tracely.radius.pill,
+  borderRadius: theme.tracely.radius.card,
   color: selected ? theme.tracely.colors.accentBright : theme.tracely.colors.inkMuted,
   borderColor: selected ? theme.tracely.accentTint(0.5) : theme.tracely.border('soft'),
   background: selected ? theme.tracely.accentTint(0.07) : 'transparent',
 
+  '& svg': {
+    width: 22,
+    height: 22,
+  },
+
   '&:hover': {
     borderColor: selected ? theme.tracely.accentTint(0.6) : theme.tracely.border('stronger'),
     background: selected ? theme.tracely.accentTint(0.09) : 'transparent',
+  },
+
+  '&.Mui-disabled': {
+    color: theme.tracely.colors.inkFaintest,
+    borderColor: theme.tracely.border('hairline'),
   },
 }))
 

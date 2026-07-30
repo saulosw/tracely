@@ -27,10 +27,28 @@ export function stubGraphQL(
   return fetchMock
 }
 
-export const anonymousSession = (): GraphQLResult => ({ data: { me: null } })
+export const anonymousSession = (): GraphQLResult => ({ data: { me: null, connections: [] } })
 
 export const authenticatedUser = {
   id: 'user-1',
-  firstName: 'Saulo',
-  email: 'saulo@exemplo.com',
+  firstName: 'Alex',
+  email: 'alex@exemplo.com',
+}
+
+export const githubConnection = {
+  id: 'conn-1',
+  provider: 'GITHUB',
+  accountLogin: 'octocat',
+  accountName: 'Alex',
+  avatarUrl: null,
+  status: 'ACTIVE',
+  lastSyncedAt: null,
+  createdAt: '2026-07-01T00:00:00.000Z',
+}
+
+export function authenticatedSession(connections: unknown[] = []) {
+  return (body: GraphQLRequestBody): GraphQLResult =>
+    body.query.includes('Connections')
+      ? { data: { connections } }
+      : { data: { me: authenticatedUser } }
 }

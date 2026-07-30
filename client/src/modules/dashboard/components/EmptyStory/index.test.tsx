@@ -18,10 +18,10 @@ const renderStory = (firstName?: string) => {
 
 describe('EmptyStory', () => {
   it('greets the reader by name', () => {
-    renderStory('Saulo')
+    renderStory('Alex')
 
     expect(
-      screen.getByRole('heading', { name: 'Saulo, sua história ainda não começou.' }),
+      screen.getByRole('heading', { name: 'Alex, sua história ainda não começou.' }),
     ).toBeInTheDocument()
   })
 
@@ -34,7 +34,7 @@ describe('EmptyStory', () => {
   })
 
   it('points the first action at the connections screen', () => {
-    renderStory('Saulo')
+    renderStory('Alex')
 
     expect(
       screen.getByRole('link', { name: 'Conectar uma fonte para começar →' }),
@@ -42,7 +42,7 @@ describe('EmptyStory', () => {
   })
 
   it('walks through every step of the first chapter', () => {
-    renderStory('Saulo')
+    renderStory('Alex')
 
     steps.forEach(({ title }) => {
       expect(screen.getByText(title)).toBeInTheDocument()

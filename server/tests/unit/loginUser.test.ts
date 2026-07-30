@@ -38,20 +38,20 @@ const setup = () => {
 describe('loginUser', () => {
   it('issues a new session for valid credentials', async () => {
     const { registerUser, loginUser, sessions } = setup()
-    await registerUser({ firstName: 'Saulo', email: 'saulo@example.com', password: 'S3nha!forte' })
+    await registerUser({ firstName: 'Alex', email: 'alex@example.com', password: 'S3nha!forte' })
 
-    const result = await loginUser({ email: 'SAULO@example.com', password: 'S3nha!forte' })
+    const result = await loginUser({ email: 'ALEX@example.com', password: 'S3nha!forte' })
 
-    expect(result.user.email).toBe('saulo@example.com')
+    expect(result.user.email).toBe('alex@example.com')
     expect(result.sessionToken).toBe('token-2')
     expect(sessions.sessions).toHaveLength(2)
   })
 
   it('rejects a wrong password', async () => {
     const { registerUser, loginUser } = setup()
-    await registerUser({ firstName: 'Saulo', email: 'saulo@example.com', password: 'S3nha!forte' })
+    await registerUser({ firstName: 'Alex', email: 'alex@example.com', password: 'S3nha!forte' })
     await expect(
-      loginUser({ email: 'saulo@example.com', password: 'S3nha!errada' }),
+      loginUser({ email: 'alex@example.com', password: 'S3nha!errada' }),
     ).rejects.toBeInstanceOf(AuthenticationError)
   })
 
@@ -67,8 +67,8 @@ describe('session lifecycle', () => {
   it('resolves the user from an active session and forgets it after logout', async () => {
     const { registerUser, logoutUser, getSessionUser } = setup()
     const { user, sessionToken } = await registerUser({
-      firstName: 'Saulo',
-      email: 'saulo@example.com',
+      firstName: 'Alex',
+      email: 'alex@example.com',
       password: 'S3nha!forte',
     })
 
@@ -81,8 +81,8 @@ describe('session lifecycle', () => {
   it('ignores expired sessions', async () => {
     const { registerUser, getSessionUser, sessions } = setup()
     const { sessionToken } = await registerUser({
-      firstName: 'Saulo',
-      email: 'saulo@example.com',
+      firstName: 'Alex',
+      email: 'alex@example.com',
       password: 'S3nha!forte',
     })
     sessions.sessions[0]!.expiresAt = new Date(Date.now() - 1000)

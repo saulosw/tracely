@@ -27,8 +27,8 @@ const connection: Connection = {
   userId: 'user-1',
   provider: 'github',
   externalAccountId: '42',
-  accountLogin: 'saulo',
-  accountName: 'Saulo',
+  accountLogin: 'octocat',
+  accountName: 'Alex',
   avatarUrl: null,
   encryptedAccessToken: 'enc:gh-token',
   scopes: ['repo'],
@@ -97,7 +97,7 @@ describe('syncConnection', () => {
 
   it('records per-project failures and finishes as partial', async () => {
     const good = sourceProject()
-    const bad = sourceProject({ externalId: '1002', name: 'broken', fullName: 'saulo/broken' })
+    const bad = sourceProject({ externalId: '1002', name: 'broken', fullName: 'octocat/broken' })
     const { syncConnection, syncRuns, projects } = setup({
       projects: [good, bad],
       activitiesByProject: {
@@ -113,9 +113,9 @@ describe('syncConnection', () => {
     expect(run.status).toBe('partial')
     expect(run.stats.projects).toBe(1)
     expect(run.stats.projectErrors).toEqual([
-      { project: 'saulo/broken', message: 'GitHub request failed with status 500' },
+      { project: 'octocat/broken', message: 'GitHub request failed with status 500' },
     ])
-    const failedProject = projects.projects.find((entry) => entry.fullName === 'saulo/broken')
+    const failedProject = projects.projects.find((entry) => entry.fullName === 'octocat/broken')
     expect(failedProject?.lastSyncedAt).toBeNull()
   })
 
@@ -144,7 +144,7 @@ describe('syncConnection', () => {
   })
 
   it('skips archived projects and projects without new pushes', async () => {
-    const archived = sourceProject({ externalId: '2001', fullName: 'saulo/old', isArchived: true })
+    const archived = sourceProject({ externalId: '2001', fullName: 'octocat/old', isArchived: true })
     const { syncConnection, syncRuns } = setup({
       projects: [archived],
       activitiesByProject: {

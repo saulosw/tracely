@@ -7,11 +7,13 @@ import type { ReactElement } from 'react'
 
 
 export function renderWithProviders(ui: ReactElement, route = '/login') {
+  const [path] = route.split('?')
+
   return render(
     <Providers>
       <MemoryRouter initialEntries={[route]}>
         <Routes>
-          <Route path={route} element={ui} />
+          <Route path={path} element={ui} />
           <Route path="/dashboard" element={<p>painel</p>} />
         </Routes>
       </MemoryRouter>
