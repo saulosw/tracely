@@ -28,7 +28,7 @@ describe('mapRepository', () => {
     expect(project).toMatchObject({
       provider: 'github',
       externalId: '1001',
-      fullName: 'saulo/tracely',
+      fullName: 'octocat/tracely',
       visibility: 'private',
       primaryLanguage: 'TypeScript',
       defaultBranch: 'main',
@@ -39,10 +39,10 @@ describe('mapRepository', () => {
 
 describe('mapActor', () => {
   it('recognizes the connected user by external id', () => {
-    const actor = mapActor({ id: 42, login: 'saulo', type: 'User' }, fakeAccount)
+    const actor = mapActor({ id: 42, login: 'octocat', type: 'User' }, fakeAccount)
     expect(actor).toEqual({
       externalId: '42',
-      login: 'saulo',
+      login: 'octocat',
       isConnectedUser: true,
       isBot: false,
     })

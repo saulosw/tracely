@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { authenticatedUser, stubGraphQL } from '@/test/graphql'
+import { authenticatedSession, authenticatedUser, stubGraphQL } from '@/test/graphql'
 import { renderWithProviders } from '@/test/renderWithProviders'
 import { navItems } from './navItems'
 import { Sidebar } from '.'
@@ -15,10 +15,9 @@ afterEach(() => {
 const accountLabel = `Conta de ${authenticatedUser.firstName}`
 
 const renderSidebar = () => {
+  const session = authenticatedSession()
   const fetchMock = stubGraphQL((body) =>
-    body.query.includes('mutation Logout')
-      ? { data: { logout: true } }
-      : { data: { me: authenticatedUser } },
+    body.query.includes('mutation Logout') ? { data: { logout: true } } : session(body),
   )
   renderWithProviders(<Sidebar />, '/connect')
   return fetchMock
@@ -48,7 +47,7 @@ describe('Sidebar', () => {
 
     expect(await screen.findByText(authenticatedUser.firstName)).toBeInTheDocument()
     expect(screen.getByText(authenticatedUser.email)).toBeInTheDocument()
-    expect(screen.getByText('S')).toBeInTheDocument()
+    expect(screen.getByText(authenticatedUser.firstName.charAt(0))).toBeInTheDocument()
   })
 
   it('keeps the account menu closed until the account is clicked', async () => {

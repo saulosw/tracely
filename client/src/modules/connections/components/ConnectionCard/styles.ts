@@ -8,13 +8,21 @@ import type { AsElement } from '@/shared/types/styled'
 
 
 export const CardRoot = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'available',
-})<AsElement & { available: boolean }>(({ theme, available }) => ({
-  borderRadius: theme.tracely.radius.cardLarge,
-  border: `1px solid ${theme.tracely.border(available ? 'faint' : 'hairline')}`,
-  background: theme.tracely.surfaceTint(available ? 0.02 : 0.01),
-  transition: theme.tracely.transition.fast,
-}))
+  shouldForwardProp: (prop) => prop !== 'available' && prop !== 'connected',
+})<AsElement & { available: boolean; connected: boolean }>(
+  ({ theme, available, connected }) => ({
+    borderRadius: theme.tracely.radius.cardLarge,
+    border: `1px solid ${
+      connected
+        ? theme.tracely.accentTint(0.28)
+        : theme.tracely.border(available ? 'faint' : 'hairline')
+    }`,
+    background: connected
+      ? theme.tracely.accentTint(0.03)
+      : theme.tracely.surfaceTint(available ? 0.02 : 0.01),
+    transition: theme.tracely.transition.fast,
+  }),
+)
 
 export const CardHead = styled(Stack)(({ theme }) => ({
   flexDirection: 'row',
@@ -28,8 +36,8 @@ export const CardHead = styled(Stack)(({ theme }) => ({
 }))
 
 export const GlyphBox = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'available',
-})<{ available: boolean }>(({ theme, available }) => ({
+  shouldForwardProp: (prop) => prop !== 'available' && prop !== 'connected',
+})<{ available: boolean; connected: boolean }>(({ theme, available, connected }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -37,9 +45,17 @@ export const GlyphBox = styled(Box, {
   height: 42,
   flexShrink: 0,
   borderRadius: theme.tracely.radius.panel,
-  border: `1px solid ${theme.tracely.border('hairline')}`,
-  background: theme.tracely.colors.canvas,
-  color: available ? theme.tracely.colors.inkQuiet : theme.tracely.colors.inkFaintest,
+  border: `1px solid ${
+    connected ? theme.tracely.accentTint(0.35) : theme.tracely.border('hairline')
+  }`,
+  background: connected ? theme.tracely.accentTint(0.07) : theme.tracely.colors.canvas,
+  boxShadow: connected ? theme.tracely.glow.accentSoft : 'none',
+  color: connected
+    ? theme.tracely.colors.accent
+    : available
+      ? theme.tracely.colors.inkQuiet
+      : theme.tracely.colors.inkFaintest,
+  transition: theme.tracely.transition.fast,
 
   '& svg': {
     width: 20,
@@ -62,6 +78,12 @@ export const Name = styled(Typography, {
 export const Description = styled(Typography)(({ theme }) => ({
   color: theme.tracely.colors.inkMuted,
   margin: '4px 0 0',
+}))
+
+export const Account = styled(Typography)(({ theme }) => ({
+  display: 'block',
+  color: theme.tracely.colors.accentPale,
+  marginTop: 6,
 }))
 
 export const Actions = styled(Stack)({
@@ -96,3 +118,12 @@ export const ConnectNote = styled(Typography)(({ theme }) => ({
   color: theme.tracely.colors.inkFaintest,
   margin: '10px 0 0',
 }))
+
+export const StaleNote = styled(Typography)(({ theme }) => ({
+  color: theme.tracely.colors.danger,
+  margin: '10px 0 0',
+}))
+
+export const ErrorSlot = styled(Box)({
+  marginTop: 16,
+})

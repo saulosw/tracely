@@ -11,8 +11,8 @@ import type { GraphQLContext } from '../../src/infra/graphql/index.js'
 
 const testUser: User = {
   id: 'user-1',
-  firstName: 'Saulo',
-  email: 'saulo@example.com',
+  firstName: 'Alex',
+  email: 'alex@example.com',
   passwordHash: 'hashed',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -75,16 +75,16 @@ describe('graphql schema', () => {
       `mutation Register($input: RegisterInput!) {
         register(input: $input) { user { id firstName email } }
       }`,
-      { input: { firstName: 'Saulo', email: 'saulo@example.com', password: 'S3nha!forte' } },
+      { input: { firstName: 'Alex', email: 'alex@example.com', password: 'S3nha!forte' } },
     )
 
     expect(result.errors).toBeUndefined()
     expect(result.data?.register).toEqual({
-      user: { id: 'user-1', firstName: 'Saulo', email: 'saulo@example.com' },
+      user: { id: 'user-1', firstName: 'Alex', email: 'alex@example.com' },
     })
     expect(registerUser).toHaveBeenCalledWith({
-      firstName: 'Saulo',
-      email: 'saulo@example.com',
+      firstName: 'Alex',
+      email: 'alex@example.com',
       password: 'S3nha!forte',
     })
     expect(setSessionCookie).toHaveBeenCalledWith('new-session-token', expiresAt)
@@ -99,7 +99,7 @@ describe('graphql schema', () => {
       `mutation Register($input: RegisterInput!) {
         register(input: $input) { user { id } }
       }`,
-      { input: { firstName: 'Saulo', email: 'saulo@example.com', password: 'S3nha!forte' } },
+      { input: { firstName: 'Alex', email: 'alex@example.com', password: 'S3nha!forte' } },
     )
 
     expect(result.errors?.[0]?.message).toBe('Email is already registered')
@@ -117,7 +117,7 @@ describe('graphql schema', () => {
       `mutation Register($input: RegisterInput!) {
         register(input: $input) { user { id } }
       }`,
-      { input: { firstName: 'Saulo', email: 'saulo@example.com', password: 'x' } },
+      { input: { firstName: 'Alex', email: 'alex@example.com', password: 'x' } },
     )
 
     expect(result.errors?.[0]?.extensions?.code).toBe('VALIDATION')
@@ -133,7 +133,7 @@ describe('graphql schema', () => {
       `mutation Register($input: RegisterInput!) {
         register(input: $input) { user { id } }
       }`,
-      { input: { firstName: 'Saulo', email: 'saulo@example.com', password: 'S3nha!forte' } },
+      { input: { firstName: 'Alex', email: 'alex@example.com', password: 'S3nha!forte' } },
     )
 
     expect(result.errors?.[0]?.message).not.toContain('pg: connection refused')
@@ -150,6 +150,85 @@ describe('graphql schema', () => {
     const { yoga } = buildYoga({}, testUser)
     const result = await execute(yoga, '{ connections { id encryptedAccessToken } }')
     expect(result.errors?.[0]?.message).toContain('Cannot query field')
+  })
+
+  it('lists the connections of the signed-in user', async () => {
+    const listConnections = vi.fn().mockResolvedValue([
+      {
+        id: 'conn-1',
+        provider: 'github',
+        accountLogin: 'octocat',
+        accountName: 'Alex',
+        avatarUrl: null,
+        status: 'active',
+        lastSyncedAt: null,
+        createdAt: new Date('2026-07-01T00:00:00Z'),
+      },
+    ])
+    const { yoga } = buildYoga({ listConnections }, testUser)
+
+    const result = await execute(yoga, '{ connections { id provider accountLogin status } }')
+
+    expect(result.data?.connections).toEqual([
+      { id: 'conn-1', provider: 'GITHUB', accountLogin: 'octocat', status: 'ACTIVE' },
+    ])
+    expect(listConnections).toHaveBeenCalledWith('user-1')
+  })
+
+  it('starts a provider connection and returns the authorize url', async () => {
+    const startProviderConnection = vi
+      .fn()
+      .mockResolvedValue({ authorizeUrl: 'https://github.com/login/oauth/authorize?state=abc' })
+    const { yoga } = buildYoga({ startProviderConnection }, testUser)
+
+    const result = await execute(
+      yoga,
+      'mutation { connectProvider(provider: GITHUB) { authorizeUrl } }',
+    )
+
+    expect(result.data?.connectProvider).toEqual({
+      authorizeUrl: 'https://github.com/login/oauth/authorize?state=abc',
+    })
+    expect(startProviderConnection).toHaveBeenCalledWith({
+      userId: 'user-1',
+      provider: 'github',
+    })
+  })
+
+  it('requires authentication to start a provider connection', async () => {
+    const startProviderConnection = vi.fn()
+    const { yoga } = buildYoga({ startProviderConnection })
+
+    const result = await execute(
+      yoga,
+      'mutation { connectProvider(provider: GITHUB) { authorizeUrl } }',
+    )
+
+    expect(result.errors?.[0]?.extensions?.code).toBe('UNAUTHENTICATED')
+    expect(startProviderConnection).not.toHaveBeenCalled()
+  })
+
+  it('disconnects a provider on behalf of the signed-in user', async () => {
+    const disconnectProvider = vi.fn().mockResolvedValue(undefined)
+    const { yoga } = buildYoga({ disconnectProvider }, testUser)
+
+    const result = await execute(yoga, 'mutation { disconnectProvider(connectionId: "conn-1") }')
+
+    expect(result.data?.disconnectProvider).toBe(true)
+    expect(disconnectProvider).toHaveBeenCalledWith({
+      userId: 'user-1',
+      connectionId: 'conn-1',
+    })
+  })
+
+  it('requires authentication to disconnect a provider', async () => {
+    const disconnectProvider = vi.fn()
+    const { yoga } = buildYoga({ disconnectProvider })
+
+    const result = await execute(yoga, 'mutation { disconnectProvider(connectionId: "conn-1") }')
+
+    expect(result.errors?.[0]?.extensions?.code).toBe('UNAUTHENTICATED')
+    expect(disconnectProvider).not.toHaveBeenCalled()
   })
 
   it('logs out by deleting the session and clearing the cookie', async () => {

@@ -1,8 +1,8 @@
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { anonymousSession, stubGraphQL } from '@/test/graphql'
+import { authenticatedSession, githubConnection, stubGraphQL } from '@/test/graphql'
 import { renderWithProviders } from '@/test/renderWithProviders'
 import { contentItems } from '../ContentOptions/contents'
 import { tones } from '../TonePicker/tones'
@@ -13,8 +13,8 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-const renderForm = () => {
-  stubGraphQL(() => anonymousSession())
+const renderForm = (connections: unknown[] = []) => {
+  stubGraphQL(authenticatedSession(connections))
   renderWithProviders(<GenerateForm />, '/generate')
 }
 
@@ -67,19 +67,31 @@ describe('GenerateForm', () => {
     expect(screen.queryByText('Sempre incluído')).not.toBeInTheDocument()
   })
 
-  it('keeps sources that have no integration out of reach', () => {
+  it('keeps every source out of reach while nothing is connected', async () => {
     renderForm()
 
-    expect(screen.getByRole('button', { name: 'GitHub' })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: 'GitHub' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Jira' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Obsidian' })).toBeDisabled()
+    expect(screen.getByText(/Nenhuma fonte conectada ainda/)).toBeInTheDocument()
+  })
+
+  it('opens up GitHub once the account is connected', async () => {
+    renderForm([githubConnection])
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'GitHub' })).toBeEnabled())
+    expect(screen.queryByText(/Nenhuma fonte conectada ainda/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Jira' })).toBeDisabled()
   })
 
   it('refuses a chapter with no source behind it', async () => {
     const user = userEvent.setup()
-    renderForm()
+    renderForm([githubConnection])
 
-    await user.click(screen.getByRole('button', { name: 'GitHub' }))
+    const github = await screen.findByRole('button', { name: 'GitHub' })
+    await waitFor(() => expect(github).toBeEnabled())
+    await user.click(github)
+    await user.click(github)
     await user.click(screen.getByRole('button', { name: 'Ontem' }))
 
     expect(await screen.findByText('Escolha ao menos uma fonte.')).toBeInTheDocument()

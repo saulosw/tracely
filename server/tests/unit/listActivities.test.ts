@@ -19,7 +19,7 @@ const item = (index: number): ActivityWithProject => ({
   title: `commit ${index}`,
   summary: null,
   url: null,
-  actor: { externalId: '42', login: 'saulo', isConnectedUser: true, isBot: false },
+  actor: { externalId: '42', login: 'octocat', isConnectedUser: true, isBot: false },
   occurredAt: new Date(Date.UTC(2026, 6, 20 - index)),
   details: {
     kind: 'commit',

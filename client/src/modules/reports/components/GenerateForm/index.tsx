@@ -25,7 +25,7 @@ export function GenerateForm() {
       period: 'last-chapter',
       from: '',
       to: '',
-      sources: ['github'],
+      sources: [],
     },
   })
 

@@ -27,8 +27,8 @@ const fillForm = async (
   user: ReturnType<typeof userEvent.setup>,
   { confirmPassword = 'S3nha!forte' } = {},
 ) => {
-  await user.type(screen.getByLabelText('Primeiro nome'), 'Saulo')
-  await user.type(screen.getByLabelText('E-mail'), 'saulo@exemplo.com')
+  await user.type(screen.getByLabelText('Primeiro nome'), 'Alex')
+  await user.type(screen.getByLabelText('E-mail'), 'alex@exemplo.com')
   await user.type(screen.getByLabelText('Senha'), 'S3nha!forte')
   await user.type(screen.getByLabelText('Confirmar senha'), confirmPassword)
 }
@@ -61,8 +61,8 @@ describe('RegisterForm', () => {
     )
     expect(JSON.parse(String(registerCall?.[1]?.body)).variables).toEqual({
       input: {
-        firstName: 'Saulo',
-        email: 'saulo@exemplo.com',
+        firstName: 'Alex',
+        email: 'alex@exemplo.com',
         password: 'S3nha!forte',
       },
     })
