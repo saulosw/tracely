@@ -28,7 +28,7 @@ export const Nav = styled(List)<AsElement>({
   padding: 0,
 })
 
-export const NewChapterButton = styled(Button)<AsLink>({
+export const NewArtifactButton = styled(Button)<AsLink>({
   marginTop: 22,
 })
 

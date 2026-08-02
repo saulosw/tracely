@@ -5,7 +5,7 @@ import { Logo } from '@/shared/components/Logo'
 import { NavItem } from './NavItem'
 import { navItems } from './navItems'
 import { UserMenu } from './UserMenu'
-import { Brand, Footer, Nav, NewChapterButton, SidebarRoot } from './styles'
+import { Brand, Footer, Nav, NewArtifactButton, SidebarRoot } from './styles'
 
 
 export function Sidebar() {
@@ -20,13 +20,19 @@ export function Sidebar() {
 
       <Nav component="nav">
         {navItems.map((item) => (
-          <NavItem key={item.to} to={item.to} label={item.label} icon={item.icon} />
+          <NavItem
+            key={item.to}
+            to={item.to}
+            label={item.label}
+            icon={item.icon}
+            disabled={item.disabled}
+          />
         ))}
       </Nav>
 
-      <NewChapterButton component={Link} to="/generate" variant="solid" fullWidth>
-        + Novo capítulo
-      </NewChapterButton>
+      <NewArtifactButton component={Link} to="/artifacts" variant="solid" fullWidth>
+        + Novo artefato
+      </NewArtifactButton>
 
       <Footer>{user ? <UserMenu user={user} /> : null}</Footer>
     </SidebarRoot>

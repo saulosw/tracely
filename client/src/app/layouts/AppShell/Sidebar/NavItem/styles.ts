@@ -24,6 +24,11 @@ export const NavItemRoot = styled(ListItemButton)<AsLink>(({ theme }) => ({
     background: theme.tracely.surfaceTint(0.05),
     color: theme.tracely.colors.inkStrong,
   },
+
+  '&.Mui-disabled': {
+    opacity: 1,
+    color: theme.tracely.colors.inkFaintest,
+  },
 }))
 
 export const NavGlyph = styled(Box)(({ theme }) => ({

@@ -24,21 +24,36 @@ const renderSidebar = () => {
 }
 
 describe('Sidebar', () => {
-  it('lists every declared destination and no longer offers "Gerar"', () => {
+  it('lists every reachable destination in the declared order', () => {
     renderSidebar()
 
-    navItems.forEach(({ label }) => {
-      expect(screen.getByRole('link', { name: label })).toBeInTheDocument()
+    const reachable = navItems.filter(({ disabled }) => !disabled)
+
+    expect(navItems.map(({ label }) => label)).toEqual([
+      'Início',
+      'Conexões',
+      'Artefatos',
+      'Agendamentos',
+      'Histórico',
+    ])
+    reachable.forEach(({ label, to }) => {
+      expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', to)
     })
-    expect(screen.queryByRole('link', { name: 'Gerar' })).not.toBeInTheDocument()
   })
 
-  it('sends "Novo capítulo" to the generate screen', () => {
+  it('shows "Agendamentos" without letting anyone through yet', () => {
     renderSidebar()
 
-    expect(screen.getByRole('link', { name: '+ Novo capítulo' })).toHaveAttribute(
+    expect(screen.queryByRole('link', { name: 'Agendamentos' })).not.toBeInTheDocument()
+    expect(screen.getByText('Agendamentos')).toBeInTheDocument()
+  })
+
+  it('sends "Novo artefato" to the artifacts screen', () => {
+    renderSidebar()
+
+    expect(screen.getByRole('link', { name: '+ Novo artefato' })).toHaveAttribute(
       'href',
-      '/generate',
+      '/artifacts',
     )
   })
 

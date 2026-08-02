@@ -28,7 +28,7 @@ describe('HistoryPage', () => {
     expect(screen.getByText('Nenhum capítulo ainda')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Escrever o primeiro capítulo →' })).toHaveAttribute(
       'href',
-      '/generate',
+      '/artifacts/insights',
     )
   })
 })

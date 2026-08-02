@@ -15,7 +15,7 @@ export function HistoryEmpty() {
         empilhando acima dele.
       </EmptyText>
 
-      <EmptyAction component={Link} to="/generate" variant="label">
+      <EmptyAction component={Link} to="/artifacts/insights" variant="label">
         Escrever o primeiro capítulo →
       </EmptyAction>
     </EmptyRoot>
