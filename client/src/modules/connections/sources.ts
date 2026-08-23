@@ -1,4 +1,5 @@
-import type { SourceCatalogEntry, UpcomingSource } from './types'
+import type { SourceId } from '@/shared/components/SourceGlyph'
+import type { Provider, SourceCatalogEntry, UpcomingSource } from './types'
 
 
 export const sourceCatalog: SourceCatalogEntry[] = [
@@ -29,3 +30,6 @@ export const upcomingSources: UpcomingSource[] = [
   { id: 'google-workspace', name: 'Google Workspace' },
   { id: 'slack', name: 'Slack' },
 ]
+
+export const sourceIdOf = (provider: Provider): SourceId =>
+  sourceCatalog.find((source) => source.provider === provider)?.id ?? 'github'

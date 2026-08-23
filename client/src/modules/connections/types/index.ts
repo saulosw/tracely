@@ -5,6 +5,8 @@ export type Provider = 'GITHUB'
 
 export type ConnectionStatus = 'ACTIVE' | 'REVOKED' | 'ERROR'
 
+export type SyncRunStatus = 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'PARTIAL'
+
 export type ProviderConnection = {
   id: string
   provider: Provider

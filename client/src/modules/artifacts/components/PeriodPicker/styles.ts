@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 
 
@@ -13,12 +12,7 @@ export const PeriodGrid = styled(Box)(({ theme }) => ({
   },
 }))
 
-export const CustomRange = styled(Stack)(({ theme }) => ({
-  flexDirection: 'row',
-  gap: 12,
+export const RangeSlot = styled(Box)({
   marginTop: 16,
-
-  [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
-  },
-}))
+  maxWidth: 320,
+})

@@ -1,10 +1,11 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 
 
 export const Footer = styled(Box)({
+  display: 'grid',
+  gap: 16,
   marginTop: 46,
   textAlign: 'center',
 })
@@ -19,9 +20,4 @@ export const SubmitButton = styled(Button)(({ theme }) => ({
     color: theme.tracely.colors.inkFaint,
     border: `1px solid ${theme.tracely.border('faint')}`,
   },
-}))
-
-export const SubmitNote = styled(Typography)(({ theme }) => ({
-  color: theme.tracely.colors.inkFaintest,
-  margin: '14px 0 0',
 }))

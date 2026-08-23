@@ -1,8 +1,8 @@
-import type { InsightPeriod } from '../../schemas/insightsSchema'
+import type { ArtifactPeriod } from '../../schemas/journalSchema'
 
 
 type PeriodOption = {
-  value: InsightPeriod
+  value: ArtifactPeriod
   label: string
   pro?: boolean
 }

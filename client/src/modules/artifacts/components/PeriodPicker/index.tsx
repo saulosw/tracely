@@ -1,20 +1,27 @@
-import { TextField } from '@/shared/components/TextField'
+import { useController } from 'react-hook-form'
+
+import { DateRangePicker } from '@/shared/components/DateRangePicker'
+import { MAX_RANGE_DAYS } from '../../schemas/journalSchema'
 import { OptionButton } from '../OptionButton'
 import { periodOptions } from './periods'
-import { CustomRange, PeriodGrid } from './styles'
+import { PeriodGrid, RangeSlot } from './styles'
 
-import type { FieldErrors, UseFormRegister } from 'react-hook-form'
-import type { InsightPeriod, InsightsFormValues } from '../../schemas/insightsSchema'
+import type { Control, FieldErrors } from 'react-hook-form'
+import type { ArtifactPeriod, JournalFormValues } from '../../schemas/journalSchema'
 
 
 type PeriodPickerProps = {
-  value: InsightPeriod
-  onChange: (period: InsightPeriod) => void
-  register: UseFormRegister<InsightsFormValues>
-  errors: FieldErrors<InsightsFormValues>
+  value: ArtifactPeriod
+  onChange: (period: ArtifactPeriod) => void
+  control: Control<JournalFormValues>
+  errors: FieldErrors<JournalFormValues>
 }
 
-export function PeriodPicker({ value, onChange, register, errors }: PeriodPickerProps) {
+export function PeriodPicker({ value, onChange, control, errors }: PeriodPickerProps) {
+  const from = useController({ control, name: 'from' })
+  const to = useController({ control, name: 'to' })
+
+
   return (
     <>
       <PeriodGrid>
@@ -31,20 +38,22 @@ export function PeriodPicker({ value, onChange, register, errors }: PeriodPicker
       </PeriodGrid>
 
       {value === 'custom' ? (
-        <CustomRange>
-          <TextField
-            label="De"
-            type="date"
-            registration={register('from')}
-            error={errors.from?.message}
+        <RangeSlot>
+          <DateRangePicker
+            label="Período personalizado"
+            value={{ from: from.field.value, to: to.field.value }}
+            onChange={(range) => {
+              from.field.onChange(range.from)
+              to.field.onChange(range.to)
+            }}
+            onClose={() => {
+              from.field.onBlur()
+              to.field.onBlur()
+            }}
+            error={errors.from?.message ?? errors.to?.message}
+            maxRangeDays={MAX_RANGE_DAYS}
           />
-          <TextField
-            label="Até"
-            type="date"
-            registration={register('to')}
-            error={errors.to?.message}
-          />
-        </CustomRange>
+        </RangeSlot>
       ) : null}
     </>
   )
