@@ -8,12 +8,12 @@ import type { AsElement, AsLink } from '@/shared/types/styled'
 
 
 export const SidebarRoot = styled(Stack)<AsElement>(({ theme }) => ({
-  width: 272,
+  width: 312,
   flexShrink: 0,
   height: '100vh',
   position: 'sticky',
   top: 0,
-  padding: '26px 20px',
+  padding: '30px 22px',
   borderRight: `1px solid ${theme.tracely.border('faint')}`,
 }))
 

@@ -1,10 +1,14 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 
-import { ArtifactsPage, InsightsPage } from '@/modules/artifacts'
+import {
+  ArtifactLibraryPage,
+  ArtifactsPage,
+  JournalPage,
+  JournalResultPage,
+} from '@/modules/artifacts'
 import { LoginPage, RegisterPage } from '@/modules/auth'
 import { ConnectionsPage } from '@/modules/connections'
 import { DashboardPage } from '@/modules/dashboard'
-import { HistoryPage } from '@/modules/history'
 import { SchedulesPage } from '@/modules/schedules'
 import { AppShell } from '../layouts/AppShell'
 import { GuestRoute } from './GuestRoute'
@@ -28,10 +32,11 @@ export const router = createBrowserRouter([
           { path: '/dashboard', element: <DashboardPage /> },
           { path: '/connect', element: <ConnectionsPage /> },
           { path: '/artifacts', element: <ArtifactsPage /> },
-          { path: '/artifacts/insights', element: <InsightsPage /> },
-          { path: '/history', element: <HistoryPage /> },
+          { path: '/artifacts/library', element: <ArtifactLibraryPage /> },
+          { path: '/artifacts/journal', element: <JournalPage /> },
+          { path: '/artifacts/journal/:id', element: <JournalResultPage /> },
           { path: '/schedules', element: <SchedulesPage /> },
-          { path: '/generate', element: <Navigate to="/artifacts/insights" replace /> },
+          { path: '/generate', element: <Navigate to="/artifacts/journal" replace /> },
         ],
       },
     ],

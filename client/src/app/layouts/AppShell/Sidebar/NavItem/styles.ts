@@ -9,9 +9,9 @@ import type { AsLink } from '@/shared/types/styled'
 export const NavItemRoot = styled(ListItemButton)<AsLink>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: 12,
+  gap: 13,
   borderRadius: theme.tracely.radius.button,
-  padding: '11px 12px',
+  padding: '12px 13px',
   color: theme.tracely.colors.inkDim,
   transition: theme.tracely.transition.fast,
 
@@ -50,7 +50,7 @@ export const NavLabel = styled(ListItemText)(({ theme }) => ({
 
   '& .MuiListItemText-primary': {
     fontFamily: theme.tracely.fonts.sans,
-    fontSize: 14.5,
+    fontSize: 15.5,
     color: 'inherit',
   },
 }))

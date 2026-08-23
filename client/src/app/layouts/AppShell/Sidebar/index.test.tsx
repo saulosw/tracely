@@ -7,6 +7,8 @@ import { renderWithProviders } from '@/test/renderWithProviders'
 import { navItems } from './navItems'
 import { Sidebar } from '.'
 
+import type { NavLeafDefinition } from './navItems'
+
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -27,18 +29,53 @@ describe('Sidebar', () => {
   it('lists every reachable destination in the declared order', () => {
     renderSidebar()
 
-    const reachable = navItems.filter(({ disabled }) => !disabled)
+    const reachable = navItems.filter(
+      (item): item is NavLeafDefinition => 'to' in item && !item.disabled,
+    )
 
     expect(navItems.map(({ label }) => label)).toEqual([
       'Início',
       'Conexões',
       'Artefatos',
       'Agendamentos',
-      'Histórico',
     ])
     reachable.forEach(({ label, to }) => {
       expect(screen.getByRole('link', { name: label })).toHaveAttribute('href', to)
     })
+  })
+
+  it('keeps the artifact destinations folded away until "Artefatos" is opened', async () => {
+    const user = userEvent.setup()
+    renderSidebar()
+
+    const artifacts = screen.getByRole('button', { name: 'Artefatos' })
+
+    expect(artifacts).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByRole('link', { name: 'Meus artefatos' })).not.toBeInTheDocument()
+
+    await user.click(artifacts)
+
+    expect(artifacts).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('link', { name: 'Artefatos' })).toHaveAttribute('href', '/artifacts')
+    expect(screen.getByRole('link', { name: 'Meus artefatos' })).toHaveAttribute(
+      'href',
+      '/artifacts/library',
+    )
+  })
+
+  it('opens "Artefatos" on its own when the reader is already inside it', () => {
+    const session = authenticatedSession()
+    stubGraphQL((body) => session(body))
+    renderWithProviders(<Sidebar />, '/artifacts/library')
+
+    expect(screen.getByRole('button', { name: 'Artefatos' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    )
+    expect(screen.getByRole('link', { name: 'Meus artefatos' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
   })
 
   it('shows "Agendamentos" without letting anyone through yet', () => {

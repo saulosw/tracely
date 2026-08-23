@@ -28,21 +28,19 @@ describe('ArtifactsPage', () => {
 
     const names = artifacts.map(({ name }) => name)
 
-    expect(names).toEqual(['Insights', 'Storytelling', 'Diário'])
+    expect(names).toEqual(['Diário', 'Insights'])
     names.forEach((name) => {
       expect(screen.getByText(name)).toBeInTheDocument()
     })
   })
 
-  it('sends the reader to the insights form and holds the rest back', () => {
+  it('sends the reader to the journal form and holds the rest back', () => {
     renderPage()
 
-    expect(screen.getByRole('link', { name: /Insights/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Diário/ })).toHaveAttribute(
       'href',
-      '/artifacts/insights',
+      '/artifacts/journal',
     )
-    expect(screen.queryByRole('link', { name: /Storytelling/ })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: /Diário/ })).not.toBeInTheDocument()
-    expect(screen.getAllByRole('link')).toHaveLength(1)
+    expect(screen.queryByRole('link', { name: /Insights/ })).not.toBeInTheDocument()
   })
 })
