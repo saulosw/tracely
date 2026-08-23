@@ -26,5 +26,26 @@ export type {
   PullRequestDetails,
   ReleaseDetails,
 } from './activity.js'
+export {
+  ARTIFACT_KINDS,
+  ARTIFACT_PERIODS,
+  JOURNAL_GRANULARITIES,
+  artifactPayloadSchema,
+  journalPayloadSchema,
+} from './artifact.js'
+export type {
+  Artifact,
+  ArtifactKind,
+  ArtifactPayload,
+  ArtifactPeriod,
+  ArtifactVersion,
+  JournalEntry,
+  JournalGranularity,
+  JournalItem,
+  JournalPayload,
+  JournalSection,
+  Measure,
+  NewArtifact,
+} from './artifact.js'
 export { emptySyncStats } from './syncRun.js'
 export type { SyncRun, SyncRunStatus, SyncStats } from './syncRun.js'

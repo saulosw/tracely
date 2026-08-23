@@ -5,3 +5,4 @@ export { createDrizzleConnectionRepository } from './drizzleConnectionRepository
 export { createDrizzleProjectRepository } from './drizzleProjectRepository.js'
 export { createDrizzleActivityRepository } from './drizzleActivityRepository.js'
 export { createDrizzleSyncRunRepository } from './drizzleSyncRunRepository.js'
+export { createDrizzleArtifactRepository } from './drizzleArtifactRepository.js'
