@@ -1,0 +1,9 @@
+# Mirrors the CI quality gate (see .github/workflows/ci.yml) so a push never
+# reaches a pull request with a failure CI would have caught anyway.
+yarn workspace client lint
+yarn workspace client typecheck
+yarn workspace client test
+
+yarn workspace server lint
+yarn workspace server typecheck
+yarn workspace server test
