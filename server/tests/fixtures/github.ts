@@ -10,8 +10,8 @@ import type {
 
 export const repositoryFixture = {
   id: 1001,
-  name: 'tracely',
-  full_name: 'octocat/tracely',
+  name: 'hello-world',
+  full_name: 'octocat/hello-world',
   owner: { login: 'octocat', id: 42, type: 'User' },
   description: 'Narrative timeline',
   private: true,
@@ -25,7 +25,7 @@ export const repositoryFixture = {
 
 export const commitFixture = {
   sha: 'abc123',
-  html_url: 'https://github.com/octocat/tracely/commit/abc123',
+  html_url: 'https://github.com/octocat/hello-world/commit/abc123',
   author: { login: 'octocat', id: 42, type: 'User' },
   committer: { login: 'web-flow', id: 19864447, type: 'User' },
   commit: {
@@ -37,7 +37,7 @@ export const commitFixture = {
 
 export const unlinkedCommitFixture = {
   sha: 'def456',
-  html_url: 'https://github.com/octocat/tracely/commit/def456',
+  html_url: 'https://github.com/octocat/hello-world/commit/def456',
   author: null,
   committer: null,
   commit: {
@@ -49,7 +49,7 @@ export const unlinkedCommitFixture = {
 
 export const botCommitFixture = {
   sha: 'bot789',
-  html_url: 'https://github.com/octocat/tracely/commit/bot789',
+  html_url: 'https://github.com/octocat/hello-world/commit/bot789',
   author: { login: 'dependabot[bot]', id: 49699333, type: 'Bot' },
   committer: { login: 'dependabot[bot]', id: 49699333, type: 'Bot' },
   commit: {
@@ -73,7 +73,7 @@ export const pullRequestFixture = {
   number: 12,
   title: 'Add GitHub OAuth connection flow',
   body: 'Implements the OAuth web flow with encrypted token storage.',
-  html_url: 'https://github.com/octocat/tracely/pull/12',
+  html_url: 'https://github.com/octocat/hello-world/pull/12',
   state: 'closed',
   draft: false,
   user: { login: 'octocat', id: 42, type: 'User' },
@@ -91,7 +91,7 @@ export const issueFixture = {
   number: 30,
   title: 'Sync fails on empty repositories',
   body: 'Repositories without commits return 409.',
-  html_url: 'https://github.com/octocat/tracely/issues/30',
+  html_url: 'https://github.com/octocat/hello-world/issues/30',
   state: 'closed',
   user: { login: 'octocat', id: 42, type: 'User' },
   created_at: '2026-07-02T08:00:00Z',
@@ -106,7 +106,7 @@ export const releaseFixture = {
   tag_name: 'v0.1.0',
   name: 'First public preview',
   body: 'Initial release with the GitHub source.',
-  html_url: 'https://github.com/octocat/tracely/releases/tag/v0.1.0',
+  html_url: 'https://github.com/octocat/hello-world/releases/tag/v0.1.0',
   prerelease: true,
   author: { login: 'octocat', id: 42, type: 'User' },
   created_at: '2026-07-15T00:00:00Z',

@@ -21,6 +21,7 @@ import type { GithubCommit, GithubCommitDetail } from './mappers/index.js'
 
 const COMMIT_DETAIL_LIMIT = 200
 const PR_DETAIL_LIMIT = 100
+const BRANCH_LIMIT = 20
 const BATCH_SIZE = 50
 
 const splitFullName = (fullName: string): { owner: string; repo: string } => {
@@ -28,10 +29,13 @@ const splitFullName = (fullName: string): { owner: string; repo: string } => {
   return { owner: fullName.slice(0, separator), repo: fullName.slice(separator + 1) }
 }
 
-async function* fetchCommits(
+const hasStatus = (error: unknown, status: number): boolean =>
+  (error as { status?: number }).status === status
+
+const listDefaultBranchCommits = async (
   octokit: Octokit,
   input: FetchProjectActivitiesInput,
-): AsyncGenerator<SourceActivity[]> {
+): Promise<GithubCommit[]> => {
   const { owner, repo } = splitFullName(input.project.fullName)
   const collected: GithubCommit[] = []
   try {
@@ -46,26 +50,97 @@ async function* fetchCommits(
       collected.push(...response.data)
     }
   } catch (error) {
-    if ((error as { status?: number }).status === 409) {
-      return
+    if (hasStatus(error, 409)) {
+      return []
     }
     throw error
   }
+  return collected
+}
 
-  const withDetails = collected.length <= COMMIT_DETAIL_LIMIT
-  let batch: SourceActivity[] = []
-  for (const commit of collected) {
-    let detail: GithubCommitDetail | null = null
-    if (withDetails) {
-      const response = await octokit.repos.getCommit({ owner, repo, ref: commit.sha })
-      detail = response.data
+const listSideBranches = async (
+  octokit: Octokit,
+  input: FetchProjectActivitiesInput,
+): Promise<string[]> => {
+  const { owner, repo } = splitFullName(input.project.fullName)
+  if (!input.project.defaultBranch) {
+    return []
+  }
+  try {
+    const { data } = await octokit.repos.listBranches({ owner, repo, per_page: 100 })
+    return data
+      .map((branch) => branch.name)
+      .filter((name) => name !== input.project.defaultBranch)
+      .slice(0, BRANCH_LIMIT)
+  } catch (error) {
+    if (hasStatus(error, 409)) {
+      return []
     }
-    batch.push(
-      mapCommit({ commit, detail, branch: input.project.defaultBranch, account: input.account }),
-    )
-    if (batch.length >= BATCH_SIZE) {
-      yield batch
-      batch = []
+    throw error
+  }
+}
+
+// Comparing against the default branch costs one request per branch and returns
+// only what the default branch listing cannot see: work that was never merged.
+const listBranchOnlyCommits = async (
+  octokit: Octokit,
+  input: FetchProjectActivitiesInput,
+  branch: string,
+): Promise<GithubCommit[]> => {
+  const { owner, repo } = splitFullName(input.project.fullName)
+  try {
+    const { data } = await octokit.repos.compareCommitsWithBasehead({
+      owner,
+      repo,
+      basehead: `${input.project.defaultBranch}...${branch}`,
+      per_page: 100,
+    })
+    return data.commits.filter((commit) => {
+      if (commit.author?.login !== input.account.login) {
+        return false
+      }
+      const authoredAt = commit.commit.author?.date
+      return !input.since || (authoredAt !== undefined && new Date(authoredAt) >= input.since)
+    })
+  } catch (error) {
+    if (hasStatus(error, 404)) {
+      return []
+    }
+    throw error
+  }
+}
+
+async function* fetchCommits(
+  octokit: Octokit,
+  input: FetchProjectActivitiesInput,
+): AsyncGenerator<SourceActivity[]> {
+  const { owner, repo } = splitFullName(input.project.fullName)
+  const groups: { branch: string | null; commits: GithubCommit[] }[] = [
+    { branch: input.project.defaultBranch, commits: await listDefaultBranchCommits(octokit, input) },
+  ]
+  for (const branch of await listSideBranches(octokit, input)) {
+    groups.push({ branch, commits: await listBranchOnlyCommits(octokit, input, branch) })
+  }
+
+  const seen = new Set<string>()
+  let detailBudget = COMMIT_DETAIL_LIMIT
+  let batch: SourceActivity[] = []
+  for (const group of groups) {
+    for (const commit of group.commits) {
+      if (seen.has(commit.sha)) {
+        continue
+      }
+      seen.add(commit.sha)
+      let detail: GithubCommitDetail | null = null
+      if (detailBudget > 0) {
+        detailBudget -= 1
+        detail = (await octokit.repos.getCommit({ owner, repo, ref: commit.sha })).data
+      }
+      batch.push(mapCommit({ commit, detail, branch: group.branch, account: input.account }))
+      if (batch.length >= BATCH_SIZE) {
+        yield batch
+        batch = []
+      }
     }
   }
   if (batch.length > 0) {

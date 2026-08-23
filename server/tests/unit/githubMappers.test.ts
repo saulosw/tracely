@@ -28,7 +28,7 @@ describe('mapRepository', () => {
     expect(project).toMatchObject({
       provider: 'github',
       externalId: '1001',
-      fullName: 'octocat/tracely',
+      fullName: 'octocat/hello-world',
       visibility: 'private',
       primaryLanguage: 'TypeScript',
       defaultBranch: 'main',
