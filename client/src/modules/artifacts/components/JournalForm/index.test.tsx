@@ -55,7 +55,9 @@ describe('JournalForm', () => {
     renderForm()
 
     toneOptions.forEach((tone) => {
-      expect(screen.getByRole('button', { name: new RegExp(tone.label) })).toBeDisabled()
+      const named = (name: string) => name.startsWith(tone.label)
+
+      expect(screen.getByRole('button', { name: named })).toBeDisabled()
     })
   })
 

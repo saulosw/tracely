@@ -47,7 +47,9 @@ const renderPicker = (props: HarnessProps = {}) => {
   return userEvent.setup()
 }
 
-const field = () => screen.getByRole('button', { name: new RegExp(LABEL) })
+const namedField = (name: string) => name.startsWith(LABEL)
+
+const field = () => screen.getByRole('button', { name: namedField })
 
 const openCalendar = async (user: ReturnType<typeof userEvent.setup>) => {
   await user.click(field())
