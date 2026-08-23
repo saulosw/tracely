@@ -33,7 +33,32 @@ export type {
   ListActivities,
   ListActivitiesInput,
 } from './timeline/listActivities.js'
+export { resolvePeriod } from './artifacts/resolvePeriod.js'
+export type { ResolvedPeriod, ResolvePeriodInput } from './artifacts/resolvePeriod.js'
+export { buildJournal } from './artifacts/buildJournal.js'
+export type { BuildJournalInput } from './artifacts/buildJournal.js'
+export { makeGenerateJournal } from './artifacts/generateJournal.js'
+export type { GenerateJournal, GenerateJournalInput } from './artifacts/generateJournal.js'
+export { makeRegenerateArtifact } from './artifacts/regenerateArtifact.js'
+export type {
+  RegenerateArtifact,
+  RegenerateArtifactInput,
+} from './artifacts/regenerateArtifact.js'
+export { makeListArtifacts } from './artifacts/listArtifacts.js'
+export type { ArtifactPage, ListArtifacts, ListArtifactsInput } from './artifacts/listArtifacts.js'
+export { makeGetArtifact } from './artifacts/getArtifact.js'
+export type { GetArtifact, GetArtifactInput } from './artifacts/getArtifact.js'
+export { makeListArtifactVersions } from './artifacts/listArtifactVersions.js'
+export type {
+  ListArtifactVersions,
+  ListArtifactVersionsInput,
+} from './artifacts/listArtifactVersions.js'
 
+import type { GenerateJournal } from './artifacts/generateJournal.js'
+import type { GetArtifact } from './artifacts/getArtifact.js'
+import type { ListArtifacts } from './artifacts/listArtifacts.js'
+import type { ListArtifactVersions } from './artifacts/listArtifactVersions.js'
+import type { RegenerateArtifact } from './artifacts/regenerateArtifact.js'
 import type { GetSessionUser } from './auth/getSessionUser.js'
 import type { LoginUser } from './auth/loginUser.js'
 import type { LogoutUser } from './auth/logoutUser.js'
@@ -59,4 +84,9 @@ export type UseCases = {
   syncConnection: SyncConnection
   getSyncStatus: GetSyncStatus
   listActivities: ListActivities
+  generateJournal: GenerateJournal
+  regenerateArtifact: RegenerateArtifact
+  listArtifacts: ListArtifacts
+  getArtifact: GetArtifact
+  listArtifactVersions: ListArtifactVersions
 }

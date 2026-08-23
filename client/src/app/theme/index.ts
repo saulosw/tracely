@@ -2,7 +2,7 @@ import { alpha, createTheme } from '@mui/material/styles'
 
 import { components } from './components'
 import { palette } from './palette'
-import { borderAlpha, colors, fonts, glow, radius, transition } from './tokens'
+import { borderAlpha, chart, colors, fonts, glow, radius, transition } from './tokens'
 import { typography } from './typography'
 
 
@@ -22,6 +22,7 @@ export const theme = createTheme({
     fonts,
     colors,
     radius,
+    chart,
     glow,
     transition,
     border,

@@ -5,6 +5,7 @@ import { emptySyncStats } from '../../src/domain/index.js'
 import type {
   Activity,
   ActivityProvider,
+  Artifact,
   Connection,
   NewConnection,
   OAuthState,
@@ -22,6 +23,7 @@ import type {
 } from '../../src/domain/index.js'
 import type {
   ActivityRepository,
+  ArtifactRepository,
   ConnectionRepository,
   OAuthStateRepository,
   ProjectRepository,
@@ -225,6 +227,57 @@ export const createFakeActivityRepository = () => {
   return { repository, activities }
 }
 
+export const createFakeArtifactRepository = () => {
+  const artifacts: Artifact[] = []
+  let clock = Date.parse('2026-07-01T00:00:00.000Z')
+  const repository: ArtifactRepository = {
+    async create(artifact) {
+      const id = randomUUID()
+      clock += 1_000
+      const created: Artifact = {
+        ...artifact,
+        id,
+        rootId: artifact.rootId ?? id,
+        generatedAt: new Date(clock),
+      }
+      artifacts.push(created)
+      return created
+    },
+    async findById(id) {
+      return artifacts.find((artifact) => artifact.id === id) ?? null
+    },
+    async listLatestByUser(filters) {
+      const newestPerLineage = new Map<string, Artifact>()
+      for (const artifact of artifacts) {
+        if (artifact.userId !== filters.userId) {
+          continue
+        }
+        if (filters.kind && artifact.kind !== filters.kind) {
+          continue
+        }
+        const current = newestPerLineage.get(artifact.rootId)
+        if (!current || current.generatedAt.getTime() < artifact.generatedAt.getTime()) {
+          newestPerLineage.set(artifact.rootId, artifact)
+        }
+      }
+
+      const ordered = [...newestPerLineage.values()].sort(
+        (first, second) => second.generatedAt.getTime() - first.generatedAt.getTime(),
+      )
+      const cursor = filters.cursor
+      const start = cursor ? ordered.findIndex((artifact) => artifact.id === cursor.id) + 1 : 0
+      return ordered.slice(start, start + filters.limit)
+    },
+    async listVersions(rootId) {
+      return artifacts
+        .filter((artifact) => artifact.rootId === rootId)
+        .sort((first, second) => second.generatedAt.getTime() - first.generatedAt.getTime())
+        .map((artifact) => ({ id: artifact.id, generatedAt: artifact.generatedAt }))
+    },
+  }
+  return { repository, artifacts }
+}
+
 export const createFakeSyncRunRepository = () => {
   const runs: SyncRun[] = []
   const repository: SyncRunRepository = {
@@ -343,8 +396,8 @@ export const createFakeActivityProvider = (plan: FakeProviderPlan): ActivityProv
 export const sourceProject = (overrides: Partial<SourceProject> = {}): SourceProject => ({
   provider: 'github',
   externalId: '1001',
-  name: 'tracely',
-  fullName: 'octocat/tracely',
+  name: 'hello-world',
+  fullName: 'octocat/hello-world',
   ownerLogin: 'octocat',
   description: null,
   visibility: 'public',
@@ -363,7 +416,7 @@ export const sourceCommit = (overrides: Partial<SourceActivity> = {}): SourceAct
   externalId: `sha-${randomUUID()}`,
   title: 'feat: add feature',
   summary: null,
-  url: 'https://github.com/octocat/tracely/commit/abc',
+  url: 'https://github.com/octocat/hello-world/commit/abc',
   actor: { externalId: '42', login: 'octocat', isConnectedUser: true, isBot: false },
   occurredAt: new Date('2026-07-10T12:00:00Z'),
   details: {

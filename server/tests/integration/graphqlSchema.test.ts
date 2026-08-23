@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { ConflictError, ValidationError } from '../../src/domain/index.js'
 import { createMaskError, schema } from '../../src/infra/graphql/index.js'
 
-import type { UseCases, User } from '../../src/domain/index.js'
+import type { Artifact, UseCases, User } from '../../src/domain/index.js'
 import type { GraphQLContext } from '../../src/infra/graphql/index.js'
 
 
@@ -16,6 +16,69 @@ const testUser: User = {
   passwordHash: 'hashed',
   createdAt: new Date(),
   updatedAt: new Date(),
+}
+
+const storedArtifact: Artifact = {
+  id: 'artifact-1',
+  userId: 'user-1',
+  rootId: 'root-1',
+  kind: 'journal',
+  period: 'custom',
+  from: new Date('2026-07-10T03:00:00Z'),
+  to: new Date('2026-07-21T02:59:59.999Z'),
+  timezone: 'America/Sao_Paulo',
+  providers: ['github'],
+  payload: {
+    kind: 'journal',
+    granularity: 'day',
+    activityCount: 4,
+    truncated: false,
+    sections: [
+      {
+        from: '2026-07-10',
+        to: '2026-07-10',
+        overflow: 0,
+        entries: [
+          {
+            id: 'activity-1',
+            provider: 'github',
+            type: 'pull_request',
+            variant: 'merged',
+            reference: '#501',
+            title: 'new dispatch layer',
+            project: 'octocat/hello-world',
+            count: 1,
+            measures: [{ key: 'linesAdded', value: 410, partial: false }],
+            items: [],
+            url: 'https://github.com/octocat/hello-world/pull/501',
+            at: '2026-07-10T14:00:00.000Z',
+          },
+          {
+            id: 'commits:2026-07-10:octocat/hello-world',
+            provider: 'github',
+            type: 'commit',
+            variant: null,
+            reference: null,
+            title: '',
+            project: 'octocat/hello-world',
+            count: 3,
+            measures: [{ key: 'linesAdded', value: 42, partial: true }],
+            items: [
+              {
+                id: 'commit-a',
+                title: 'ajusta o retry',
+                url: 'https://github.com/octocat/hello-world/commit/a',
+                at: '2026-07-10T11:00:00.000Z',
+              },
+            ],
+            url: null,
+            at: null,
+          },
+        ],
+      },
+    ],
+  },
+  generatedAt: new Date('2026-07-21T12:00:00Z'),
 }
 
 const buildYoga = (useCases: Partial<UseCases>, currentUser: User | null = null) => {
@@ -240,6 +303,130 @@ describe('graphql schema', () => {
     expect(result.data?.logout).toBe(true)
     expect(logoutUser).toHaveBeenCalledWith('session-token')
     expect(clearSessionCookie).toHaveBeenCalled()
+  })
+
+  it('generates a journal from the form choices and returns the timeline', async () => {
+    const generateJournal = vi.fn().mockResolvedValue(storedArtifact)
+    const { yoga } = buildYoga({ generateJournal }, testUser)
+
+    const result = await execute(
+      yoga,
+      `mutation GenerateJournal($input: GenerateJournalInput!) {
+        generateJournal(input: $input) {
+          id
+          kind
+          period
+          activityCount
+          journal {
+            granularity
+            sections {
+              from
+              to
+              overflow
+              entries {
+                type
+                variant
+                reference
+                count
+                measures { key value partial }
+                items { id title url }
+              }
+            }
+          }
+        }
+      }`,
+      {
+        input: {
+          period: 'CUSTOM',
+          timezone: 'America/Sao_Paulo',
+          from: '2026-07-10',
+          to: '2026-07-20',
+          providers: ['GITHUB'],
+        },
+      },
+    )
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data?.generateJournal).toEqual({
+      id: 'artifact-1',
+      kind: 'JOURNAL',
+      period: 'CUSTOM',
+      activityCount: 4,
+      journal: {
+        granularity: 'DAY',
+        sections: [
+          {
+            from: '2026-07-10',
+            to: '2026-07-10',
+            overflow: 0,
+            entries: [
+              {
+                type: 'PULL_REQUEST',
+                variant: 'merged',
+                reference: '#501',
+                count: 1,
+                measures: [{ key: 'linesAdded', value: 410, partial: false }],
+                items: [],
+              },
+              {
+                type: 'COMMIT',
+                variant: null,
+                reference: null,
+                count: 3,
+                measures: [{ key: 'linesAdded', value: 42, partial: true }],
+                items: [
+                  {
+                    id: 'commit-a',
+                    title: 'ajusta o retry',
+                    url: 'https://github.com/octocat/hello-world/commit/a',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    })
+    expect(generateJournal).toHaveBeenCalledWith({
+      userId: 'user-1',
+      period: 'custom',
+      timezone: 'America/Sao_Paulo',
+      from: '2026-07-10',
+      to: '2026-07-20',
+      providers: ['github'],
+    })
+  })
+
+  it('keeps the artifact library behind the session', async () => {
+    const { yoga } = buildYoga({}, null)
+
+    const result = await execute(yoga, '{ artifacts { items { id } } }')
+
+    expect(result.errors?.[0]?.extensions?.code).toBe('UNAUTHENTICATED')
+  })
+
+  it('reads a single artifact and its versions for the signed-in reader', async () => {
+    const getArtifact = vi.fn().mockResolvedValue(storedArtifact)
+    const listArtifactVersions = vi
+      .fn()
+      .mockResolvedValue([{ id: 'artifact-1', generatedAt: new Date('2026-07-21T12:00:00Z') }])
+    const { yoga } = buildYoga({ getArtifact, listArtifactVersions }, testUser)
+
+    const result = await execute(
+      yoga,
+      '{ artifact(id: "artifact-1") { id timezone versions { id } } }',
+    )
+
+    expect(result.data?.artifact).toEqual({
+      id: 'artifact-1',
+      timezone: 'America/Sao_Paulo',
+      versions: [{ id: 'artifact-1' }],
+    })
+    expect(getArtifact).toHaveBeenCalledWith({ userId: 'user-1', artifactId: 'artifact-1' })
+    expect(listArtifactVersions).toHaveBeenCalledWith({
+      userId: 'user-1',
+      artifactId: 'artifact-1',
+    })
   })
 
   it('triggers a sync and returns the running run without awaiting completion', async () => {

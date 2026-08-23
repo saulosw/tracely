@@ -1,12 +1,13 @@
 import type { CSSProperties } from 'react'
 
-import type { borderAlpha, colors, fonts, glow, radius, transition } from './tokens'
+import type { borderAlpha, chart, colors, fonts, glow, radius, transition } from './tokens'
 
 
 interface TracelyTokens {
   fonts: typeof fonts
   colors: typeof colors
   radius: typeof radius
+  chart: typeof chart
   glow: typeof glow
   transition: typeof transition
   border: {

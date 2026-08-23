@@ -35,6 +35,7 @@ export const mapPullRequest = (input: {
       state: pull.state === 'open' ? 'open' : 'closed',
       isDraft: Boolean(pull.draft),
       merged: Boolean(pull.merged_at),
+      createdAt: pull.created_at,
       mergedAt: pull.merged_at ?? null,
       baseBranch: pull.base.ref,
       headBranch: pull.head.ref,

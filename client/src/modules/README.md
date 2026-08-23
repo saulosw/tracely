@@ -2,10 +2,10 @@
 
 One folder per product feature, each self-contained:
 
+- `artifacts/` — what gets generated, and everything already generated
 - `auth/` — login screen, auth state and hooks
 - `connections/` — the sources the story is read from, and their connection state
 - `dashboard/` — the authenticated landing view
-- `history/` — the chapters already generated
 - `reports/` — time-range picker, report generation trigger
 - `timeline/` — the narrative timeline / story view
 

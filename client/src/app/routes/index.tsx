@@ -1,10 +1,15 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 
+import {
+  ArtifactLibraryPage,
+  ArtifactsPage,
+  JournalPage,
+  JournalResultPage,
+} from '@/modules/artifacts'
 import { LoginPage, RegisterPage } from '@/modules/auth'
 import { ConnectionsPage } from '@/modules/connections'
 import { DashboardPage } from '@/modules/dashboard'
-import { HistoryPage } from '@/modules/history'
-import { GeneratePage } from '@/modules/reports'
+import { SchedulesPage } from '@/modules/schedules'
 import { AppShell } from '../layouts/AppShell'
 import { GuestRoute } from './GuestRoute'
 import { ProtectedRoute } from './ProtectedRoute'
@@ -26,8 +31,12 @@ export const router = createBrowserRouter([
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
           { path: '/connect', element: <ConnectionsPage /> },
-          { path: '/generate', element: <GeneratePage /> },
-          { path: '/history', element: <HistoryPage /> },
+          { path: '/artifacts', element: <ArtifactsPage /> },
+          { path: '/artifacts/library', element: <ArtifactLibraryPage /> },
+          { path: '/artifacts/journal', element: <JournalPage /> },
+          { path: '/artifacts/journal/:id', element: <JournalResultPage /> },
+          { path: '/schedules', element: <SchedulesPage /> },
+          { path: '/generate', element: <Navigate to="/artifacts/journal" replace /> },
         ],
       },
     ],

@@ -22,6 +22,28 @@ export const ConnectionStatusEnum = builder.enumType('ConnectionStatus', {
   } as const,
 })
 
+export const ArtifactKindEnum = builder.enumType('ArtifactKind', {
+  values: { JOURNAL: { value: 'journal' } } as const,
+})
+
+export const ArtifactPeriodEnum = builder.enumType('ArtifactPeriod', {
+  values: {
+    YESTERDAY: { value: 'yesterday' },
+    TODAY: { value: 'today' },
+    WEEK: { value: 'week' },
+    MONTH: { value: 'month' },
+    YEAR: { value: 'year' },
+    CUSTOM: { value: 'custom' },
+  } as const,
+})
+
+export const JournalGranularityEnum = builder.enumType('JournalGranularity', {
+  values: {
+    TIME: { value: 'time' },
+    DAY: { value: 'day' },
+  } as const,
+})
+
 export const SyncStatusEnum = builder.enumType('SyncStatus', {
   values: {
     RUNNING: { value: 'running' },

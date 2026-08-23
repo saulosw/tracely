@@ -6,14 +6,14 @@ import { Providers } from '@/app/providers'
 import type { ReactElement } from 'react'
 
 
-export function renderWithProviders(ui: ReactElement, route = '/login') {
+export function renderWithProviders(ui: ReactElement, route = '/login', pattern?: string) {
   const [path] = route.split('?')
 
   return render(
     <Providers>
       <MemoryRouter initialEntries={[route]}>
         <Routes>
-          <Route path={path} element={ui} />
+          <Route path={pattern ?? path} element={ui} />
           <Route path="/dashboard" element={<p>painel</p>} />
         </Routes>
       </MemoryRouter>

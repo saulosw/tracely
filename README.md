@@ -72,10 +72,10 @@ tracely/
     src/
       app/                # app shell, providers, router setup
       modules/            # one folder per product feature
+        artifacts/        #   what gets generated, and everything already generated
         auth/             #   login, auth state
         connections/      #   the sources the story is read from
         dashboard/        #   the authenticated landing view
-        history/          #   the chapters already generated
         reports/          #   time-range picker, report trigger
         timeline/         #   the narrative timeline view
       shared/             # reusable UI primitives, hooks, lib, design tokens

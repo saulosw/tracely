@@ -11,12 +11,15 @@ type NavItemProps = {
   to: string
   label: string
   icon: IconName
+  disabled?: boolean
 }
 
-export function NavItem({ to, label, icon }: NavItemProps) {
+export function NavItem({ to, label, icon, disabled = false }: NavItemProps) {
+  const routing = disabled ? {} : { component: NavLink, to }
+
   return (
     <ListItem disablePadding>
-      <NavItemRoot component={NavLink} to={to} disableRipple>
+      <NavItemRoot {...routing} disabled={disabled} disableRipple>
         <NavGlyph>
           <Icon name={icon} />
         </NavGlyph>

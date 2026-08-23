@@ -54,6 +54,14 @@ export const radius = {
 } as const
 
 
+export const chart = {
+  mark: colors.accent,
+  markMuted: 'rgba(214, 163, 90, 0.28)',
+  grid: 'rgba(255, 255, 255, 0.06)',
+  axis: colors.inkFainter,
+} as const
+
+
 export const glow = {
   accentStrong: '0 0 16px rgba(214, 163, 90, 0.7)',
   accent: '0 0 14px rgba(214, 163, 90, 0.7)',

@@ -34,6 +34,7 @@ export const pullRequestDetailsSchema = z.object({
   state: z.enum(['open', 'closed']),
   isDraft: z.boolean(),
   merged: z.boolean(),
+  createdAt: z.string().nullable(),
   mergedAt: z.string().nullable(),
   baseBranch: z.string(),
   headBranch: z.string(),

@@ -6,6 +6,7 @@ import './auth.js'
 import './connections.js'
 import './sync.js'
 import './timeline.js'
+import './artifacts.js'
 
 
 builder.queryType({})
