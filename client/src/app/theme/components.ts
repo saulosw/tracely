@@ -45,6 +45,10 @@ export const components: Components<Omit<Theme, 'components'>> = {
           opacity: 0.5,
         },
 
+        '& .MuiButton-startIcon': {
+          margin: 0,
+        },
+
         '& .MuiButton-loadingIndicator': {
           color: theme.tracely.colors.accent,
         },

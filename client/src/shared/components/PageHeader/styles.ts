@@ -9,6 +9,13 @@ export const HeaderRoot = styled(Box)<AsElement>({
   marginBottom: 40,
 })
 
+export const TitleRow = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 20,
+})
+
 export const Title = styled(Typography)({
   margin: 0,
 })
