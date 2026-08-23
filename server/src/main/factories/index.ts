@@ -2,13 +2,18 @@ import {
   createProviderRegistry,
   makeCompleteProviderConnection,
   makeDisconnectProvider,
+  makeGenerateJournal,
+  makeGetArtifact,
   makeGetSessionUser,
   makeGetSyncStatus,
   makeListActivities,
+  makeListArtifacts,
+  makeListArtifactVersions,
   makeListConnections,
   makeLoginUser,
   makeLogoutUser,
   makeRegisterUser,
+  makeRegenerateArtifact,
   makeStartProviderConnection,
   makeSyncConnection,
 } from '../../domain/index.js'
@@ -23,6 +28,7 @@ import {
 import {
   createDrizzleActivityRepository,
   createDrizzleConnectionRepository,
+  createDrizzleArtifactRepository,
   createDrizzleOAuthStateRepository,
   createDrizzleProjectRepository,
   createDrizzleSessionRepository,
@@ -50,6 +56,7 @@ export const composeServer = (config: Config) => {
   const projectRepository = createDrizzleProjectRepository(db)
   const activityRepository = createDrizzleActivityRepository(db)
   const syncRunRepository = createDrizzleSyncRunRepository(db)
+  const artifactRepository = createDrizzleArtifactRepository(db)
 
   const passwordHasher = createScryptPasswordHasher()
   const tokenGenerator = createCryptoTokenGenerator()
@@ -61,6 +68,9 @@ export const composeServer = (config: Config) => {
   const activityProviders = createProviderRegistry({
     github: createGithubActivityProvider(),
   })
+
+  const getArtifact = makeGetArtifact({ artifactRepository })
+  const generateJournal = makeGenerateJournal({ activityRepository, artifactRepository })
 
   const useCases: UseCases = {
     registerUser: makeRegisterUser({
@@ -104,11 +114,17 @@ export const composeServer = (config: Config) => {
     }),
     getSyncStatus: makeGetSyncStatus({ connectionRepository, syncRunRepository }),
     listActivities: makeListActivities({ activityRepository }),
+    generateJournal,
+    regenerateArtifact: makeRegenerateArtifact({ getArtifact, generateJournal }),
+    listArtifacts: makeListArtifacts({ artifactRepository }),
+    getArtifact,
+    listArtifactVersions: makeListArtifactVersions({ artifactRepository, getArtifact }),
   }
 
   const sessionMiddleware = createSessionMiddleware(useCases.getSessionUser)
   const oauthRouter = createOAuthRouter({
     completeProviderConnection: useCases.completeProviderConnection,
+    syncConnection: useCases.syncConnection,
     clientUrl: config.clientUrl,
     logger,
   })
